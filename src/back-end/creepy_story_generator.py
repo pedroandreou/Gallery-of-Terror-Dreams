@@ -36,7 +36,10 @@ class InputPayload(BaseModel):
 app = FastAPI()
 
 
-DATA_DIR = Path.cwd() / "dir_of_creepy_imgs_saved_as_json"
+DATA_DIR = Path.cwd() / "responses"
+DATA_DIR.mkdir(exist_ok=True)
+
+IMAGE_DIR = Path.cwd() / "images"
 DATA_DIR.mkdir(exist_ok=True)
 
 
@@ -54,7 +57,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
         return bullet_dict
 
-    prompt = f"Generate 10 bullet points that would narrate a horror, creepy, frightening, scaring, terrifying movie from the following text: {text} "
+    prompt = f"Generate 2 bullet points that would narrate a horror, creepy, frightening, scaring, terrifying movie from the following text: {text} "
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -70,11 +73,11 @@ def generate_bullet_points_using_gpt3(text: str):
 
 
 def generate_imgs_using_dalle2(text: str):
-    prompt = f"Creepy old unexplained photo of '{text}'"
+    prompt = f"Create a fictional creepy old unexplained story, based on the following description: '{text}'"
 
     response = openai.Image.create(
         prompt=prompt,
-        n=2,
+        n=1,
         size="256x256",
         response_format="b64_json",
     )
@@ -84,32 +87,41 @@ def generate_imgs_using_dalle2(text: str):
     with open(file_name, mode="w", encoding="utf-8") as file:
         json.dump(response, file)
 
-    IMAGE_DIR = Path.cwd() / "images" / file_name.stem
-    IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-
-    # Convert the JSON file to a PNG img
-    with open(file_name, mode="r", encoding="utf-8") as file:
-        response = json.load(file)
-
-    for index, image_dict in enumerate(response["data"]):
-        image_data = b64decode(image_dict["b64_json"])
-        image_file = IMAGE_DIR / f"{file_name.stem}-{index}.png"
-        with open(image_file, mode="wb") as png:
-            png.write(image_data)
-
 
 @app.post("/create-creepy-story", response_class=JSONResponse, status_code=200)
 def create_creepy_story(payload: InputPayload = Body(None)):
-    # Check if the directory exists before deleting it
+    # Check if the directory exists and delete it if it does
     if os.path.exists(DATA_DIR):
         shutil.rmtree(DATA_DIR)
+    os.makedirs(DATA_DIR)
+
+    if os.path.exists(IMAGE_DIR):
+        shutil.rmtree(IMAGE_DIR)
+    os.makedirs(IMAGE_DIR)
 
     # Generate bullet points
     bullet_dict = generate_bullet_points_using_gpt3(payload.input_text)
 
-    # Generate creepy imgs
+    # Generate creepy imgs as basecode64 and add them to JSON files
     for item in bullet_dict:
         generate_imgs_using_dalle2(item["sentence"])
+
+    # Loop through the files in the directory and get their names
+    # Then decode the imgs from base64 to a PNG format
+    count = 0
+    for filename in os.listdir(DATA_DIR):
+        JSON_FILE = DATA_DIR / filename
+
+        with open(JSON_FILE, mode="r", encoding="utf-8") as file:
+            response = json.load(file)
+
+        for _, image_dict in enumerate(response["data"]):
+            image_data = b64decode(image_dict["b64_json"])
+            IMAGE_FILE = IMAGE_DIR / f"{JSON_FILE.stem}-{count}.png"
+            with open(IMAGE_FILE, mode="wb") as png:
+                png.write(image_data)
+
+        count += 1
 
 
 if __name__ == "__main__":
