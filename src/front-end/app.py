@@ -34,18 +34,9 @@ def handle_submit(text):
 
     try:
         response = requests.post(
-            "http://localhost:8000/generate-bullet-points", headers=headers, json=data
+            "http://localhost:8000/create-creepy-story", headers=headers, json=data
         )
         response.raise_for_status()
-        bullet_points = response.json()["sentences"]
-
-        st.write("Generated bullet points:")
-
-        for bullet_point in bullet_points:
-            st.write(
-                f"<p style='color:white;'>- {bullet_point['sentence']}</p>",
-                unsafe_allow_html=True,
-            )
     except requests.exceptions.RequestException as e:
         st.write(f"Error: {e}")
         st.write(f"Response content: {e.response.content}")

@@ -11,3 +11,9 @@
 
 # Environment variables
 **/.env_vars
+
+# Dir of JSONs containing Base64 generated imgs
+**/responses
+
+# Dir of the PNG imgs
+**/images
