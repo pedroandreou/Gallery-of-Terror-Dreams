@@ -1,2 +1,7 @@
 pre-commit
 streamlit
+openai
+fastapi
+pydantic
+python-dotenv
+uvicorn

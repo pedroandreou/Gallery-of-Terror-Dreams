@@ -35,6 +35,11 @@ source ./.env/bin/activate
 
 ## Windows
 source ./.venv/Scripts/activate
+cmd.exe /C update_requirements.bat
+
+or
+
+source ./.venv/Scripts/activate
 pip install -r unpinned_requirements.txt
 echo "# Created automatically by make update-requirements-txt. Do not update manually!" > requirements.txt
 pip freeze | grep -v pkg_resources >> requirements.txt

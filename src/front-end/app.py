@@ -1,13 +1,60 @@
+import base64
+import os
 import subprocess
 
+import requests
 import streamlit as st
+
+
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+    st.markdown(
+        f"""
+    <style>
+    .stApp {{
+        background-image: url(data:image/{"png"};base64,{encoded_string.decode()});
+        background-size: cover
+    }}
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def handle_submit(text):
     """
-    Handle text submission
+    Pass the submitted text to back-end
+    and show the generated output
     """
-    st.write(f"Text submitted: {text}")
+    # Make a request to the backend API
+    headers = {"Content-Type": "application/json"}
+
+    data = {"input_text": text}
+
+    try:
+        response = requests.post(
+            "http://localhost:8000/generate-bullet-points", headers=headers, json=data
+        )
+        response.raise_for_status()
+        bullet_points = response.json()["sentences"]
+
+        st.write("Generated bullet points:")
+
+        for bullet_point in bullet_points:
+            st.write(
+                f"<p style='color:white;'>- {bullet_point['sentence']}</p>",
+                unsafe_allow_html=True,
+            )
+    except requests.exceptions.RequestException as e:
+        st.write(f"Error: {e}")
+        st.write(f"Response content: {e.response.content}")
+
+
+# Add img to the bg
+current_dir = os.path.abspath(os.path.dirname(__file__))
+background_url = f"{current_dir}/imgs/bg.jpg".replace("\\", "/")
+add_bg_from_local(background_url)
 
 
 # Center the container horizontally
@@ -69,8 +116,7 @@ if __name__ == "__main__":
         "streamlit",
         "run",
         "app.py",
-        "--server.port=8000",
+        "--server.port=8501",  # Change the port number to 8501
         "--browser.gatherUsageStats=false",
-        "--server.enableCORS=false",
     ]
     subprocess.run(cmd)
