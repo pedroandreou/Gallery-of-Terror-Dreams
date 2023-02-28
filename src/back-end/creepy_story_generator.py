@@ -57,7 +57,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
         return bullet_dict
 
-    prompt = f"Generate 2 bullet points that would narrate a horror, creepy, frightening, scaring, terrifying movie from the following text: {text} "
+    prompt = f"Generate 10 bullet points that would narrate a horror, creepy, frightening, scaring, terrifying movie from the following text: {text} "
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -73,7 +73,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
 
 def generate_imgs_using_dalle2(text: str):
-    prompt = f"Create a fictional creepy old unexplained story, based on the following description: '{text}'"
+    prompt = f"Create a creepy old unexplained story of '{text}'"
 
     response = openai.Image.create(
         prompt=prompt,
@@ -90,13 +90,10 @@ def generate_imgs_using_dalle2(text: str):
 
 @app.post("/create-creepy-story", response_class=JSONResponse, status_code=200)
 def create_creepy_story(payload: InputPayload = Body(None)):
-    # Check if the directory exists and delete it if it does
-    if os.path.exists(DATA_DIR):
-        shutil.rmtree(DATA_DIR)
+    # Check if directories exist and delete them if they do
+    shutil.rmtree(DATA_DIR, ignore_errors=True)
+    shutil.rmtree(IMAGE_DIR, ignore_errors=True)
     os.makedirs(DATA_DIR)
-
-    if os.path.exists(IMAGE_DIR):
-        shutil.rmtree(IMAGE_DIR)
     os.makedirs(IMAGE_DIR)
 
     # Generate bullet points

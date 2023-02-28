@@ -41,6 +41,17 @@ def handle_submit(text):
         st.write(f"Error: {e}")
         st.write(f"Response content: {e.response.content}")
 
+    # Get the absolute path of the current directory
+    current_path = os.path.abspath(os.path.dirname(__file__))
+
+    # Get the absolute path of the parent directory
+    parent_path = os.path.abspath(os.path.join(current_path, ".."))
+
+    video_file = open(f"{parent_path}/back-end/output.mp4", "rb")
+    video_bytes = video_file.read()
+
+    st.video(video_bytes)
+
 
 # Add img to the bg
 current_dir = os.path.abspath(os.path.dirname(__file__))
