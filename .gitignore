@@ -17,3 +17,9 @@
 
 # Dir of the PNG imgs
 **/images
+
+# Output Video file
+**/output.mp4
+
+# Audio file
+**/audio.mp3

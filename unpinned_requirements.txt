@@ -5,3 +5,4 @@ fastapi
 pydantic
 python-dotenv
 uvicorn
+moviepy

@@ -6,6 +6,7 @@ from base64 import b64decode
 from pathlib import Path
 from typing import List
 
+import images_to_video
 import openai
 from fastapi import Body, FastAPI
 from fastapi.responses import JSONResponse
@@ -73,7 +74,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
 
 def generate_imgs_using_dalle2(text: str):
-    prompt = f"Create a fictional creepy old unexplained story, based on the following description: '{text}'"
+    prompt = f"Create a creepy old unexplained story of '{text}'"
 
     response = openai.Image.create(
         prompt=prompt,
@@ -90,13 +91,10 @@ def generate_imgs_using_dalle2(text: str):
 
 @app.post("/create-creepy-story", response_class=JSONResponse, status_code=200)
 def create_creepy_story(payload: InputPayload = Body(None)):
-    # Check if the directory exists and delete it if it does
-    if os.path.exists(DATA_DIR):
-        shutil.rmtree(DATA_DIR)
+    # Check if directories exist and delete them if they do
+    shutil.rmtree(DATA_DIR, ignore_errors=True)
+    shutil.rmtree(IMAGE_DIR, ignore_errors=True)
     os.makedirs(DATA_DIR)
-
-    if os.path.exists(IMAGE_DIR):
-        shutil.rmtree(IMAGE_DIR)
     os.makedirs(IMAGE_DIR)
 
     # Generate bullet points
@@ -123,12 +121,17 @@ def create_creepy_story(payload: InputPayload = Body(None)):
 
         count += 1
 
+    # Generate output video
+    finale = images_to_video.Video((1024, 768))
+    finale.shape_changer()
+    finale.video_creator()
 
-if __name__ == "__main__":
-    import subprocess
 
-    subprocess.Popen(["start", "chrome", "http://127.0.0.1:8000/docs"], shell=True)
+# if __name__ == "__main__":
+# import subprocess
 
-    import uvicorn
+# subprocess.Popen(["start", "chrome", "http://127.0.0.1:8000/docs"], shell=True)
 
-    uvicorn.run("creepy_story_generator:app", host="0.0.0.0", port=8000, reload=True)
+# import uvicorn
+
+# uvicorn.run("creepy_story_generator:app", host="0.0.0.0", port=8000, reload=True)
