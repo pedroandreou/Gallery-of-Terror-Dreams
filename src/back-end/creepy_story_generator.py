@@ -127,11 +127,11 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     finale.video_creator()
 
 
-if __name__ == "__main__":
-    import subprocess
+# if __name__ == "__main__":
+# import subprocess
 
-    subprocess.Popen(["start", "chrome", "http://127.0.0.1:8000/docs"], shell=True)
+# subprocess.Popen(["start", "chrome", "http://127.0.0.1:8000/docs"], shell=True)
 
-    import uvicorn
+# import uvicorn
 
-    uvicorn.run("creepy_story_generator:app", host="0.0.0.0", port=8000, reload=True)
+# uvicorn.run("creepy_story_generator:app", host="0.0.0.0", port=8000, reload=True)

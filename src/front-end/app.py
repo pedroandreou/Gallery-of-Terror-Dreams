@@ -34,7 +34,7 @@ def handle_submit(text):
 
     try:
         response = requests.post(
-            "http://localhost:8000/create-creepy-story", headers=headers, json=data
+            "http://back-end:8000/create-creepy-story", headers=headers, json=data
         )
         response.raise_for_status()
 
@@ -51,7 +51,6 @@ def handle_submit(text):
         st.video(video_bytes)
     except requests.exceptions.RequestException as e:
         st.write(f"Error: {e}")
-        st.write(f"Response content: {e.response.content}")
 
 
 def main():
@@ -100,15 +99,12 @@ def main():
 
 
 if __name__ == "__main__":
-    cmd = [
-        "streamlit",
-        "run",
-        "app.py",
-        "--server.port=8501",  # Change the port number to 8501
-        "--browser.gatherUsageStats=false",
-    ]
-    subprocess.run(cmd)
+    # cmd = [
+    #     "streamlit",
+    #     "run",
+    #     "app.py",
+    #     "--server.port=8501",  # Change the port number to 8501
+    #     "--browser.gatherUsageStats=false",
+    # ]
+    # subprocess.run(cmd)
     main()
-
-# if __name__ == '__main__':
-# 	main()
