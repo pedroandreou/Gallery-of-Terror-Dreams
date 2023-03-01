@@ -37,20 +37,21 @@ def handle_submit(text):
             "http://localhost:8000/create-creepy-story", headers=headers, json=data
         )
         response.raise_for_status()
+
+        # Get the absolute path of the current directory
+        current_path = os.path.abspath(os.path.dirname(__file__))
+
+        # Get the absolute path of the parent directory
+        parent_path = os.path.abspath(os.path.join(current_path, ".."))
+
+        # Show the created video on the front-end
+        video_file = open(f"{parent_path}/back-end/output.mp4".replace("\\", "/"), "rb")
+        video_bytes = video_file.read()
+
+        st.video(video_bytes)
     except requests.exceptions.RequestException as e:
         st.write(f"Error: {e}")
         st.write(f"Response content: {e.response.content}")
-
-    # Get the absolute path of the current directory
-    current_path = os.path.abspath(os.path.dirname(__file__))
-
-    # Get the absolute path of the parent directory
-    parent_path = os.path.abspath(os.path.join(current_path, ".."))
-
-    video_file = open(f"{parent_path}/back-end/output.mp4", "rb")
-    video_bytes = video_file.read()
-
-    st.video(video_bytes)
 
 
 # Add img to the bg

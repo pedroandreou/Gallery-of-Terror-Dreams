@@ -43,8 +43,3 @@ class Video:
         new_audioclip = CompositeAudioClip([audio_clip])
         video_clip = video_clip.set_audio(new_audioclip)
         video_clip.write_videofile("output.mp4", fps=24)
-
-
-finale = Video((1024, 768))
-finale.shape_changer()
-finale.video_creator()

@@ -6,6 +6,7 @@ from base64 import b64decode
 from pathlib import Path
 from typing import List
 
+import images_to_video
 import openai
 from fastapi import Body, FastAPI
 from fastapi.responses import JSONResponse
@@ -57,7 +58,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
         return bullet_dict
 
-    prompt = f"Generate 10 bullet points that would narrate a horror, creepy, frightening, scaring, terrifying movie from the following text: {text} "
+    prompt = f"Generate 2 bullet points that would narrate a horror, creepy, frightening, scaring, terrifying movie from the following text: {text} "
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -77,7 +78,7 @@ def generate_imgs_using_dalle2(text: str):
 
     response = openai.Image.create(
         prompt=prompt,
-        n=1,
+        n=3,
         size="256x256",
         response_format="b64_json",
     )
@@ -119,6 +120,11 @@ def create_creepy_story(payload: InputPayload = Body(None)):
                 png.write(image_data)
 
         count += 1
+
+    # Generate output video
+    finale = images_to_video.Video((1024, 768))
+    finale.shape_changer()
+    finale.video_creator()
 
 
 if __name__ == "__main__":
