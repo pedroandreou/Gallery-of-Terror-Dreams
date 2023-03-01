@@ -78,7 +78,7 @@ def generate_imgs_using_dalle2(text: str):
 
     response = openai.Image.create(
         prompt=prompt,
-        n=3,
+        n=1,
         size="256x256",
         response_format="b64_json",
     )
