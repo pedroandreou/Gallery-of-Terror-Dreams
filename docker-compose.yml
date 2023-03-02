@@ -24,6 +24,11 @@ services:
       - ./src/back-end:/code/src/back-end
     ports:
       - "8000:8000"
+    environment:
+      - IMAGE_DIR=/code/src/back-end/images/
+      - AUDIO_FILE=/code/src/back-end/audio/audio.mp3
+      - FLASH_VIDEO_FILE=/code/src/back-end/videos/flash_video.mp4
+      - FINAL_VIDEO_FILE=/code/src/back-end/videos/final_video.mp4
     restart: always
     networks:
       - my-network
