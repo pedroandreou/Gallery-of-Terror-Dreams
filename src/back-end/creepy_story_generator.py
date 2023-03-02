@@ -9,39 +9,23 @@ from typing import List
 import images_to_video
 import openai
 from fastapi import Body, FastAPI
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, BaseSettings, validator
-
-
-class Settings(BaseSettings):
-    OPENAI_API_KEY: str = "OPENAI_API_KEY"
-
-    class Config:
-        env_file = ".env_vars"
-
-    @validator("OPENAI_API_KEY")
-    def key_must_not_be_empty(cls, value):
-        if value:
-            return value
-        raise ValueError("API key cannot be empty.")
-
-
-settings = Settings()
-openai.api_key = settings.OPENAI_API_KEY
+from fastapi.responses import JSONResponse, Response
+from pydantic import BaseModel
 
 
 class InputPayload(BaseModel):
     input_text: str
+    openai_key: str
 
 
 app = FastAPI()
 
 
-DATA_DIR = Path.cwd() / "responses"
-DATA_DIR.mkdir(exist_ok=True)
+DATA_DIR = os.environ.get("DATA_DIR", "/code/src/back-end/responses")
+Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
 
-IMAGE_DIR = Path.cwd() / "images"
-DATA_DIR.mkdir(exist_ok=True)
+IMAGE_DIR = os.environ.get("IMAGE_DIR", "/code/src/back-end/images")
+Path(IMAGE_DIR).mkdir(parents=True, exist_ok=True)
 
 
 def generate_bullet_points_using_gpt3(text: str):
@@ -82,7 +66,7 @@ def generate_imgs_using_dalle2(text: str):
         size="256x256",
         response_format="b64_json",
     )
-    file_name = DATA_DIR / f"{prompt[:5]}-{response['created']}.json"
+    file_name = Path(DATA_DIR) / f"{prompt[:5]}-{response['created']}.json"
 
     # Save the img as a base64 code in a JSON file
     with open(file_name, mode="w", encoding="utf-8") as file:
@@ -91,6 +75,9 @@ def generate_imgs_using_dalle2(text: str):
 
 @app.post("/create-creepy-story", response_class=JSONResponse, status_code=200)
 def create_creepy_story(payload: InputPayload = Body(None)):
+    # Set the API key as a global variable
+    openai.api_key = payload.openai_key
+
     # Check if directories exist and delete them if they do
     shutil.rmtree(DATA_DIR, ignore_errors=True)
     shutil.rmtree(IMAGE_DIR, ignore_errors=True)
@@ -101,21 +88,21 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     bullet_dict = generate_bullet_points_using_gpt3(payload.input_text)
 
     # Generate creepy imgs as basecode64 and add them to JSON files
-    for item in bullet_dict:
-        generate_imgs_using_dalle2(item["sentence"])
+    for bullet_point in bullet_dict:
+        generate_imgs_using_dalle2(bullet_point["sentence"])
 
     # Loop through the files in the directory and get their names
     # Then decode the imgs from base64 to a PNG format
     count = 0
     for filename in os.listdir(DATA_DIR):
-        JSON_FILE = DATA_DIR / filename
+        JSON_FILE = Path(DATA_DIR) / filename
 
         with open(JSON_FILE, mode="r", encoding="utf-8") as file:
             response = json.load(file)
 
         for _, image_dict in enumerate(response["data"]):
             image_data = b64decode(image_dict["b64_json"])
-            IMAGE_FILE = IMAGE_DIR / f"{JSON_FILE.stem}-{count}.png"
+            IMAGE_FILE = Path(IMAGE_DIR) / f"{JSON_FILE.stem}-{count}.png"
             with open(IMAGE_FILE, mode="wb") as png:
                 png.write(image_data)
 
@@ -126,12 +113,22 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     finale.shape_changer()
     finale.video_creator()
 
+    # Save the created video
+    video_url = os.environ.get(
+        "VIDEO_URL", "http://back-end:8000/videos/final_video.mp4"
+    )
 
-# if __name__ == "__main__":
-# import subprocess
+    # Return the URL of the created video
+    return {"video_url": video_url}
 
-# subprocess.Popen(["start", "chrome", "http://127.0.0.1:8000/docs"], shell=True)
 
-# import uvicorn
+@app.get("/videos/{video_path:path}")
+async def serve_video(video_path: str):
+    video_file = open(os.path.join("/code/src/back-end/videos", video_path), "rb")
+    video_bytes = video_file.read()
 
-# uvicorn.run("creepy_story_generator:app", host="0.0.0.0", port=8000, reload=True)
+    # Set the video content type
+    headers = {"Content-Type": "video/mp4"}
+
+    # Return the video bytes and set the content type
+    return Response(video_bytes, headers=headers)

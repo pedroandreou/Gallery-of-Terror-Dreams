@@ -16,17 +16,6 @@ python -m venv .venv
 ```
 
 
-### Make a copy of the example environment variables file (this is not the virtual env; don't get confused; it's just for keeping your api-key secured)
-```
-## Linux
-cp .env_vars.example .env_vars
-
-
-## Windows
-xcopy .env_vars.example .env_vars
-```
-
-
 ### How to activate the virtual environment to run the code
 ```
 ## Linux

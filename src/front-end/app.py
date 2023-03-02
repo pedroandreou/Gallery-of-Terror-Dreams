@@ -1,6 +1,5 @@
 import base64
 import os
-import subprocess
 
 import requests
 import streamlit as st
@@ -30,25 +29,17 @@ def handle_submit(text):
     # Make a request to the backend API
     headers = {"Content-Type": "application/json"}
 
-    data = {"input_text": text}
+    data = {"input_text": text, "openai_key": st.session_state["api_key"]}
 
     try:
         response = requests.post(
             "http://back-end:8000/create-creepy-story", headers=headers, json=data
-        )
-        response.raise_for_status()
+        ).json()
 
-        # Get the absolute path of the current directory
-        current_path = os.path.abspath(os.path.dirname(__file__))
+        video_url = response["video_url"]
 
-        # Get the absolute path of the parent directory
-        parent_path = os.path.abspath(os.path.join(current_path, ".."))
-
-        # Show the created video on the front-end
-        video_file = open(f"{parent_path}/back-end/output.mp4".replace("\\", "/"), "rb")
-        video_bytes = video_file.read()
-
-        st.video(video_bytes)
+        response = requests.get(video_url)
+        st.video(response.content)
     except requests.exceptions.RequestException as e:
         st.write(f"Error: {e}")
 
@@ -97,14 +88,20 @@ def main():
     if submit_button:
         handle_submit(text_input)
 
+    # Initialize session state
+    if "api_key" not in st.session_state:
+        st.session_state["api_key"] = None
+
+    # Prompt the user for their API key
+    st.sidebar.subheader("OpenAI API Key")
+    api_key = st.sidebar.text_input("Enter your OpenAI API key", type="password")
+    if api_key:
+        # Set the API key in session state
+        st.session_state["api_key"] = api_key
+
+        # Create a pop-up notification
+        st.success("API key set successfully")
+
 
 if __name__ == "__main__":
-    # cmd = [
-    #     "streamlit",
-    #     "run",
-    #     "app.py",
-    #     "--server.port=8501",  # Change the port number to 8501
-    #     "--browser.gatherUsageStats=false",
-    # ]
-    # subprocess.run(cmd)
     main()
