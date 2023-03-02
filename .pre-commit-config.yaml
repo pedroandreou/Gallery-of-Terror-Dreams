@@ -15,11 +15,11 @@ repos:
       exclude: src/back-end/images_to_video.py
 - repo: https://github.com/asottile/seed-isort-config
   rev: v2.2.0
-  exclude: src/back-end/images_to_video.py
   hooks:
     - id: seed-isort-config
+      exclude: src/back-end/images_to_video.py
 - repo: https://github.com/timothycrosley/isort
-  rev: 4.3.21  # pick the isort version you'd like to use from https://github.com/timothycrosley/isort/releases
+  rev: 4.3.21
   hooks:
     - id: isort
       exclude: src/back-end/images_to_video.py

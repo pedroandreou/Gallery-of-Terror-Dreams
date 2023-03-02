@@ -13,13 +13,13 @@
 **/.env_vars
 
 # Dir of JSONs containing Base64 generated imgs
-**/responses
+**/base64_code
 
 # Dir of the PNG imgs
-**/images
+**/png_images
 
 # Output Video file
-**/output.mp4
+**/videos/final_video.mp4
 
 # Audio file
 **/audio.mp3

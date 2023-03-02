@@ -21,10 +21,10 @@ class InputPayload(BaseModel):
 app = FastAPI()
 
 
-DATA_DIR = os.environ.get("DATA_DIR", "/code/src/back-end/responses")
+DATA_DIR = os.environ.get("DATA_DIR", "/code/src/back-end/base64_code")
 Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
 
-IMAGE_DIR = os.environ.get("IMAGE_DIR", "/code/src/back-end/images")
+IMAGE_DIR = os.environ.get("IMAGE_DIR", "/code/src/back-end/png_images")
 Path(IMAGE_DIR).mkdir(parents=True, exist_ok=True)
 
 

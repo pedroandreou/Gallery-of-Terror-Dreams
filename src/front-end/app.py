@@ -6,17 +6,18 @@ import streamlit as st
 
 
 def add_bg_from_local(image_file):
-    with open(image_file, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read())
+    with open(image_file, "rb") as f:
+        img_bytes = f.read()
+
     st.markdown(
         f"""
-    <style>
-    .stApp {{
-        background-image: url(data:image/{"png"};base64,{encoded_string.decode()});
-        background-size: cover
-    }}
-    </style>
-    """,
+        <style>
+        .stApp {{
+            background-image: url('data:image/png;base64,{base64.b64encode(img_bytes).decode()}');
+            background-size: cover;
+        }}
+        </style>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -46,17 +47,15 @@ def handle_submit(text):
 
 def main():
     # Add img to the bg
-    current_dir = os.path.abspath(os.path.dirname(__file__))
-    background_url = f"{current_dir}/imgs/bg.jpg".replace("\\", "/")
-    add_bg_from_local(background_url)
+    main_bg = os.environ.get("MAIN_BG", "/code/src/front-end/images/main_bg.jpg")
+    add_bg_from_local(main_bg)
 
-    # Center the container horizontally
+    # Center the title horizontally
     st.markdown(
         "<h1 style='text-align: center; color: red; font-size: 36px; font-weight: bold;'>Gallery of Terror dreams</h1>",
         unsafe_allow_html=True,
     )
 
-    # Leave empty space
     for _ in range(5):
         st.write("")
 
