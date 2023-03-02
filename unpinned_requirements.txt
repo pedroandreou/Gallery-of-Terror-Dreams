@@ -6,4 +6,3 @@ pydantic
 python-dotenv
 uvicorn
 moviepy
-docker-compose

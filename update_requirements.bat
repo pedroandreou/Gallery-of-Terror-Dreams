@@ -1,6 +1,9 @@
 @echo off
 setlocal
 
+REM Uninstall all the requirements that are currently in the virtual env
+pip freeze | xargs pip uninstall -y
+
 REM Install packages from unpinned_requirements.txt
 pip install -r unpinned_requirements.txt
 
