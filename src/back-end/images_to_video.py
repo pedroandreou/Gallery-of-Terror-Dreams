@@ -14,7 +14,7 @@ from PIL import Image
 class Video:
     def __init__(self, size):
         self.size = size
-        self.image_dir = os.environ.get("IMAGE_DIR", "/code/src/back-end/images/")
+        self.image_dir = os.environ.get("IMAGE_DIR", "/code/src/back-end/png_images/")
 
     def shape_changer(self):
         for filename in os.listdir(self.image_dir):
