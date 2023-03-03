@@ -9,9 +9,6 @@
 # Python
 **/__pycache__
 
-# Environment variables
-**/.env_vars
-
 # Dir of JSONs containing Base64 generated imgs
 **/base64_code
 
@@ -19,7 +16,7 @@
 **/png_images
 
 # Output Video file
-**/videos/final_video.mp4
+**/final_video.mp4
 
 # Audio file
 **/audio.mp3
