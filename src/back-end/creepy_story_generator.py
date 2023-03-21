@@ -8,6 +8,7 @@ from typing import List
 
 import images_to_video
 import openai
+import streamlit as st
 from fastapi import Body, FastAPI
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel
@@ -20,12 +21,15 @@ class InputPayload(BaseModel):
 
 app = FastAPI()
 
+current_path = os.path.dirname(os.path.abspath(__file__))
 
-DATA_DIR = os.environ.get("DATA_DIR", "/code/src/back-end/base64_code")
-Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
+DATA_DIR = os.path.join(current_path, "base64_code")
+if not os.path.exists(DATA_DIR):
+    Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
 
-IMAGE_DIR = os.environ.get("IMAGE_DIR", "/code/src/back-end/png_images")
-Path(IMAGE_DIR).mkdir(parents=True, exist_ok=True)
+IMAGE_DIR = os.path.join(current_path, "png_images")
+if not os.path.exists(IMAGE_DIR):
+    Path(IMAGE_DIR).mkdir(parents=True, exist_ok=True)
 
 
 def generate_bullet_points_using_gpt3(text: str):
@@ -114,9 +118,7 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     finale.video_creator()
 
     # Save the created video
-    video_url = os.environ.get(
-        "VIDEO_URL", "http://back-end:8000/videos/final_video.mp4"
-    )
+    video_url = "http://localhost:8000/videos/final_video.mp4"
 
     # Return the URL of the created video
     return {"video_url": video_url}
@@ -124,7 +126,9 @@ def create_creepy_story(payload: InputPayload = Body(None)):
 
 @app.get("/videos/{video_path:path}")
 async def serve_video(video_path: str):
-    video_file = open(os.path.join("/code/src/back-end/videos", video_path), "rb")
+    current_path = os.path.dirname(__file__)
+    video_file = os.path.join(current_path, "videos")
+    video_file = open(os.path.join(video_file, video_path), "rb")
     video_bytes = video_file.read()
 
     # Set the video content type
