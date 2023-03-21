@@ -1,9 +1,9 @@
 import base64
 import os
-from PIL import Image
 
 import requests
 import streamlit as st
+from PIL import Image
 
 
 def add_bg_from_local(image_file):
@@ -58,7 +58,7 @@ def main():
 
     # Change the webpage name and icon
     web_icon = Image.open(os.path.join(current_path, "images/texas_icon.jpg"))
-    st.set_page_config(page_title='Gallery of Terro Dreams', page_icon=web_icon)
+    st.set_page_config(page_title="Gallery of Terro Dreams", page_icon=web_icon)
 
     # Add img to the bg
     main_bg_path = os.path.join(current_path, "images/main_bg.jpg")
@@ -71,7 +71,6 @@ def main():
         st.session_state["api_key"] = None
     if "submit_disabled" not in st.session_state:
         st.session_state["submit_disabled"] = True
-
 
     # Center the title horizontally
     st.markdown(
@@ -103,7 +102,13 @@ def main():
 
     # Create input box and submit button
     st.markdown(text_input_style, unsafe_allow_html=True)
-    text_input = st.text_area("Enter text here", value=st.session_state["text_input"], height=200, key="text_input", max_chars=1000)
+    text_input = st.text_area(
+        "Enter text here",
+        value=st.session_state["text_input"],
+        height=200,
+        key="text_input",
+        max_chars=1000,
+    )
 
     col1, col2 = st.columns([3, 1])
     col1.write("")
@@ -120,7 +125,9 @@ def main():
 
     # Prompt the user for their API key
     st.sidebar.subheader("OpenAI API Key")
-    api_key = st.sidebar.text_input("Enter your OpenAI API key", type="password", value=st.session_state["api_key"])
+    api_key = st.sidebar.text_input(
+        "Enter your OpenAI API key", type="password", value=st.session_state["api_key"]
+    )
     if api_key:
         # Set the API key in session state
         st.session_state["api_key"] = api_key
@@ -136,17 +143,21 @@ def main():
         st.session_state["text_input"] = text_input
 
     # Create the warning placeholder
-    if 'warning_placeholder' not in st.session_state:
-        st.session_state['warning_placeholder'] = st.empty()
+    if "warning_placeholder" not in st.session_state:
+        st.session_state["warning_placeholder"] = st.empty()
 
     # Update the warning message using the callback function
     chars_left = 30 - len(st.session_state["text_input"])
     update_warning(chars_left)
 
     # Display the hyperlink within the sidebar
-    st.sidebar.write("If you do not remember your API key, get it from [here](https://platform.openai.com/account/api-keys)")
+    st.sidebar.write(
+        "If you do not remember your API key, get it from [here](https://platform.openai.com/account/api-keys)"
+    )
 
-    st.sidebar.warning("After making changes to the GUI, be sure to click on the background to ensure that Streamlit updates the interface")
+    st.sidebar.warning(
+        "After making changes to the GUI, be sure to click on the background to ensure that Streamlit updates the interface"
+    )
 
 
 if __name__ == "__main__":
