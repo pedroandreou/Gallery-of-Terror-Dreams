@@ -24,7 +24,7 @@ source ./.env/bin/activate
 
 ## Windows
 source ./.venv/Scripts/activate
-cmd.exe /C update_requirements.bat
+cmd.exe /C uninstall_install_requirements.bat
 ```
 
 
