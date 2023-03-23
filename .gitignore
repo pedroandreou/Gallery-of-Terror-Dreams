@@ -18,5 +18,5 @@
 # Output Video file
 **/final_video.mp4
 
-# Audio file
-**/audio.mp3
+# Conf file for sorting imports
+**/.isort.cfg

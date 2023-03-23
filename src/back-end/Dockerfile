@@ -1,14 +1,17 @@
-# Use the Python 3.10 base image
-FROM python:3.10
+# Use the Python 3.8 base image
+FROM python:3.8
 
 # Set the working directory to /code
 WORKDIR /code
 
-# Copy requirements file to container
-COPY ./requirements.txt /code/requirements.txt
+# Declare the requirements argument
+ARG requirements
 
-# Install required packages listed in requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+# Copy unpinned_requirements.txt file to the container
+COPY ${requirements} /code/unpinned_requirements.txt
+
+# Install required packages from unpinned_requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/unpinned_requirements.txt
 
 # Expose port 8000 for Uvicorn
 EXPOSE 8000
