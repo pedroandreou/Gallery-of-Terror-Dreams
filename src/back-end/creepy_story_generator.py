@@ -2,6 +2,7 @@ import json
 import os
 import re
 import shutil
+from base64 import b64decode
 from pathlib import Path
 from typing import List
 
@@ -94,9 +95,26 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     # Generate bullet points
     bullet_dict = generate_bullet_points_using_gpt3(payload.input_text)
 
-    # Generate images based on the bullet points
+    # Generate creepy imgs as basecode64 and add them to JSON files
     for bullet_point in bullet_dict:
         generate_imgs_using_dalle2(bullet_point["sentence"])
+
+    # Loop through the files in the directory and get their names
+    # Then decode the imgs from base64 to a PNG format
+    count = 0
+    for filename in os.listdir(DATA_DIR):
+        JSON_FILE = Path(DATA_DIR) / filename
+
+        with open(JSON_FILE, mode="r", encoding="utf-8") as file:
+            response = json.load(file)
+
+        for _, image_dict in enumerate(response["data"]):
+            image_data = b64decode(image_dict["b64_json"])
+            IMAGE_FILE = Path(IMAGE_DIR) / f"{JSON_FILE.stem}-{count}.png"
+            with open(IMAGE_FILE, mode="wb") as png:
+                png.write(image_data)
+
+        count += 1
 
     # Generate output video
     finale = images_to_video.Video((1024, 768))
