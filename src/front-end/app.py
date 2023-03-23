@@ -3,11 +3,15 @@ import os
 import string
 from urllib.parse import urljoin
 
+import nltk
 import requests
 import streamlit as st
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from PIL import Image
+
+nltk.download("stopwords")
+nltk.download("punkt")
 
 
 def add_bg_from_local(image_file):
@@ -41,6 +45,9 @@ def handle_submit(text):
     """
 
     def preprocess_text(text):
+        # Remove leading and trailing white space from the text
+        text = text.strip()
+
         # Remove punctuation
         text = text.translate(str.maketrans("", "", string.punctuation))
 

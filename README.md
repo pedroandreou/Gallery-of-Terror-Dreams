@@ -2,7 +2,6 @@
 To be added
 
 
-
 ## :building_construction: Environment
 
 ### You should create a virtualenv with the required dependencies by running
@@ -29,12 +28,6 @@ cmd.exe /C uninstall_install_requirements.bat
 ```
 
 
-## How to run the two containers under the same network:
-```
-./build-and-run.sh
-```
-
-
 ## How to close a port that is already in use when trying to run it locally
 ```
 sudo lsof -i :PORT_NUMBER
@@ -43,13 +36,36 @@ sudo kill PID
 
 
 ## :whale: Docker
+#### How to run the two containers under the same network for the first time:
+```
+## Windows
+./build-and-run.bat
+
+
+## Linux
+./build-and-run.sh
+```
+
+#### Handy commands:
 ```
 ## UP
 docker-compose up -d
 docker-compose logs -f --tail=100 --no-color
 
+
 ## DOWN
 docker-compose down
+
+
+## OPTIONAL FOR REBUILDING THE IMAGES
+docker-compose build
+
+
+## OR DELETING ALL THE LOCAL IMGS
+docker image rm $(docker image ls -a -q)
+
+# OR REMOVING ALL RUNNING AND STOPPED CONTAINERS
+docker rm -vf $(docker ps -aq)
 ```
 
 

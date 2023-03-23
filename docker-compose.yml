@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: ./src/front-end/Dockerfile
+      args:
+        - requirements=./unpinned_requirements.txt
     volumes:
       - ./src/front-end:/code/src/front-end
     ports:
@@ -22,6 +24,8 @@ services:
     build:
       context: .
       dockerfile: ./src/back-end/Dockerfile
+      args:
+        - requirements=./unpinned_requirements.txt
     volumes:
       - ./src/back-end:/code/src/back-end
     ports:

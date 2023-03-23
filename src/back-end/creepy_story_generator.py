@@ -46,7 +46,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
         return bullet_dict
 
-    prompt = f"Generate 5 bullet points that would narrate a horror, creepy, frightening, scaring, terrifying movie from the following text: {text}"
+    prompt = f"Generate 5 bullet points that would narrate an analog unsettling horror style movie from the following text: {text}"
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -63,7 +63,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
 
 def generate_imgs_using_dalle2(text: str):
-    prompt = f"Create a creepy old unexplained story of '{text}'"
+    prompt = f"Create an analog horror unsettling style movie of '{text}'"
 
     response = openai.Image.create(
         prompt=prompt,
