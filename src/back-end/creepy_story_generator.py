@@ -38,7 +38,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
         return bullet_dict
 
-    prompt = f"Generate 5 bullet points that would narrate an analog unsettling horror style movie for: {text}"
+    prompt = f"Generate five bullet points to narrate an unsettling horror movie in an analog style of: {text}"
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -46,6 +46,7 @@ def generate_bullet_points_using_gpt3(text: str):
         max_tokens=1000,
         n=2,
         stop=None,
+        top_p=1,
         temperature=0.5,
     )
 
@@ -55,7 +56,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
 
 def generate_imgs_using_dalle2(count: int, text: str):
-    prompt = f"Create an analog horror unsettling style movie of '{text}'"
+    prompt = f"Create an unsettling horror movie in an analog style for: {text}"
 
     response = openai.Image.create(
         prompt=prompt,
@@ -64,7 +65,7 @@ def generate_imgs_using_dalle2(count: int, text: str):
         response_format="b64_json",
     )
 
-    # Construct the file path for the image file using Pathlib
+    # Construct the file path for the image file
     file_path = Path(IMAGE_DIR) / f"best_{count}.png"
 
     for i, image_dict in enumerate(response["data"]):
