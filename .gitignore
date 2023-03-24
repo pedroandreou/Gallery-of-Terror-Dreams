@@ -9,9 +9,6 @@
 # Python
 **/__pycache__
 
-# Dir of JSONs containing Base64 generated imgs
-**/base64_code
-
 # Dir of the PNG imgs
 **/png_images
 
@@ -19,4 +16,4 @@
 **/final_video.mp4
 
 # Conf file for sorting imports
-**/.isort.cfg
+.isort.cfg
