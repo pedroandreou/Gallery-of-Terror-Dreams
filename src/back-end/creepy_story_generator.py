@@ -1,8 +1,8 @@
-import json
 import os
 import re
 import shutil
 from base64 import b64decode
+from contextlib import suppress
 from pathlib import Path
 from typing import List
 
@@ -20,17 +20,9 @@ class InputPayload(BaseModel):
 
 app = FastAPI()
 
-current_path = os.path.dirname(os.path.abspath(__file__))
 
-DATA_DIR = os.path.join(current_path, "base64_code")
-if os.path.exists(DATA_DIR):
-    shutil.rmtree(DATA_DIR)  # Delete the directory and its contents
-Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
-
-IMAGE_DIR = os.path.join(current_path, "png_images")
-if os.path.exists(IMAGE_DIR):
-    shutil.rmtree(IMAGE_DIR)  # Delete the directory and its contents
-Path(IMAGE_DIR).mkdir(parents=True, exist_ok=True)
+current_path = Path(__file__).resolve().parent
+IMAGE_DIR = current_path / "png_images"
 
 
 def generate_bullet_points_using_gpt3(text: str):
@@ -46,7 +38,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
         return bullet_dict
 
-    prompt = f"Generate 5 bullet points that would narrate an analog unsettling horror style movie from the following text: {text}"
+    prompt = f"Generate 5 bullet points that would narrate an analog unsettling horror style movie for: {text}"
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -62,22 +54,27 @@ def generate_bullet_points_using_gpt3(text: str):
     return bullet_dict
 
 
-def generate_imgs_using_dalle2(text: str):
+def generate_imgs_using_dalle2(count: int, text: str):
     prompt = f"Create an analog horror unsettling style movie of '{text}'"
 
     response = openai.Image.create(
         prompt=prompt,
-        n=1,
+        n=3,  # Generate 3 images
         size="256x256",
         response_format="b64_json",
     )
 
-    # Construct the file path for the image file
-    file_path = os.path.join(DATA_DIR, f"{prompt[:5]}-{response['created']}.json")
+    # Construct the file path for the image file using Pathlib
+    file_path = Path(IMAGE_DIR) / f"best_{count}.png"
 
-    # Save the image as a base64 code in a JSON file
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(response, f)
+    for i, image_dict in enumerate(response["data"]):
+        # Save the third photo's JSON only as the third
+        # generation is usually better than the previous two
+        if i == 2:
+            image_data = b64decode(image_dict["b64_json"])
+
+            with open(file_path, mode="wb") as png:
+                png.write(image_data)
 
 
 @app.post("/create-creepy-story", response_class=JSONResponse, status_code=200)
@@ -85,36 +82,17 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     # Set the API key as a global variable
     openai.api_key = payload.openai_key
 
-    # Check if directories exist and delete them if they do
-    for dir_path in (DATA_DIR, IMAGE_DIR):
-        if os.path.exists(dir_path):
-            shutil.rmtree(dir_path)
-
-        os.makedirs(dir_path)
+    # Check if directory exists and delete it if it does
+    with suppress(FileNotFoundError):
+        shutil.rmtree(IMAGE_DIR)
+    Path(IMAGE_DIR).mkdir(parents=True)
 
     # Generate bullet points
     bullet_dict = generate_bullet_points_using_gpt3(payload.input_text)
 
-    # Generate creepy imgs as basecode64 and add them to JSON files
-    for bullet_point in bullet_dict:
-        generate_imgs_using_dalle2(bullet_point["sentence"])
-
-    # Loop through the files in the directory and get their names
-    # Then decode the imgs from base64 to a PNG format
-    count = 0
-    for filename in os.listdir(DATA_DIR):
-        JSON_FILE = Path(DATA_DIR) / filename
-
-        with open(JSON_FILE, mode="r", encoding="utf-8") as file:
-            response = json.load(file)
-
-        for _, image_dict in enumerate(response["data"]):
-            image_data = b64decode(image_dict["b64_json"])
-            IMAGE_FILE = Path(IMAGE_DIR) / f"{JSON_FILE.stem}-{count}.png"
-            with open(IMAGE_FILE, mode="wb") as png:
-                png.write(image_data)
-
-        count += 1
+    # Generate creepy imgs
+    for i, bullet_point in enumerate(bullet_dict):
+        generate_imgs_using_dalle2(i, bullet_point["sentence"])
 
     # Generate output video
     finale = images_to_video.Video((1024, 768))
@@ -133,7 +111,7 @@ def create_creepy_story(payload: InputPayload = Body(None)):
 
 
 @app.get("/create-creepy-story/videos/final_video.mp4")
-async def serve_video():
+def serve_video():
     # Set the video file path based on whether the code is running in a Docker container or locally
     video_file_path = (
         "/code/src/back-end/videos/final_video.mp4"
