@@ -4,7 +4,7 @@ To be added
 
 ## :building_construction: Environment
 
-### You should create a virtualenv with the required dependencies by running
+### :house: You should create a virtualenv
 ```
 ## Linux
 make virtualenv
@@ -15,20 +15,29 @@ python -m venv .venv
 ```
 
 
-### How to activate the virtual environment to run the code
+### :factory: How to activate the virtual environment
 ```
 ## Linux
 source ./.env/bin/activate
-make update-requirements-txt (For reproducibility)
 
 
 ## Windows
 source ./.venv/Scripts/activate
+```
+
+
+### :house_with_garden: How to update the requirements
+```
+## Linux
+make update-requirements-txt (For reproducibility)
+
+
+## Windows
 cmd.exe /C uninstall_install_requirements.bat
 ```
 
 
-## How to close a port that is already in use when trying to run it locally
+## :hammer: How to close a port that is already in use when trying to run it locally
 ```
 sudo lsof -i :PORT_NUMBER
 sudo kill PID
@@ -38,12 +47,12 @@ sudo kill PID
 ## :whale: Docker
 #### How to run the two containers under the same network for the first time:
 ```
-## Windows
-./build-and-run.bat
-
-
 ## Linux
 ./build-and-run.sh
+
+
+## Windows
+cmd.exe /C build-and-run.bat
 ```
 
 #### Handy commands:

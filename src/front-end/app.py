@@ -1,6 +1,7 @@
 import base64
 import os
 import string
+from pathlib import Path
 from urllib.parse import urljoin
 
 import nltk
@@ -10,8 +11,17 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from PIL import Image
 
-nltk.download("stopwords")
-nltk.download("punkt")
+if not nltk.data.path:
+    nltk.download("stopwords")
+    nltk.download("punkt")
+
+
+current_path = Path(__file__).resolve().parent
+
+# Change the webpage name and icon
+web_icon_path = current_path / "images/texas_icon.jpg"
+with Image.open(web_icon_path) as web_icon:
+    st.set_page_config(page_title="Gallery of Terro Dreams", page_icon=web_icon)
 
 
 def add_bg_from_local(image_file):
@@ -29,6 +39,11 @@ def add_bg_from_local(image_file):
         """,
         unsafe_allow_html=True,
     )
+
+
+# Add img to the bg
+main_bg_path = current_path / "images/main_bg.jpg"
+add_bg_from_local(main_bg_path)
 
 
 def update_warning(chars_left):
@@ -93,114 +108,99 @@ def handle_submit(text):
         st.error(f"Error: {e}")
 
 
-def main():
-    current_path = os.path.dirname(__file__)
+# Initialize session state variables
+if "text_input" not in st.session_state:
+    st.session_state["text_input"] = ""
+if "api_key" not in st.session_state:
+    st.session_state["api_key"] = None
+if "submit_disabled" not in st.session_state:
+    st.session_state["submit_disabled"] = True
 
-    # Change the webpage name and icon
-    web_icon = Image.open(os.path.join(current_path, "images/texas_icon.jpg"))
-    st.set_page_config(page_title="Gallery of Terro Dreams", page_icon=web_icon)
+# Center the title horizontally
+st.markdown(
+    "<h1 style='text-align: center; color: red; font-size: 36px; font-weight: bold;'>Gallery of Terror dreams</h1>",
+    unsafe_allow_html=True,
+)
 
-    # Add img to the bg
-    main_bg_path = os.path.join(current_path, "images/main_bg.jpg")
-    add_bg_from_local(main_bg_path)
+for _ in range(5):
+    st.write("")
 
-    # Initialize session state variables
-    if "text_input" not in st.session_state:
-        st.session_state["text_input"] = ""
-    if "api_key" not in st.session_state:
-        st.session_state["api_key"] = None
-    if "submit_disabled" not in st.session_state:
-        st.session_state["submit_disabled"] = True
+# Define custom CSS
+text_input_style = """
+    <style>
+        div[data-baseweb="textarea"] textarea {
+            background-color: black;
+            color: white;
+        }
+        .stButton button {
+            background-color: black;
+            color: white;
+            margin-left: 10px;
+        }
+        .stAlert {
+            background-color: black !important;
+            color: white !important;
+        }
+    </style>
+"""
 
-    # Center the title horizontally
-    st.markdown(
-        "<h1 style='text-align: center; color: red; font-size: 36px; font-weight: bold;'>Gallery of Terror dreams</h1>",
-        unsafe_allow_html=True,
-    )
+# Create input box and submit button
+st.markdown(text_input_style, unsafe_allow_html=True)
+text_input = st.text_area(
+    "Enter text here",
+    value=st.session_state.get("text_input", ""),
+    height=200,
+    key="text_input",
+    max_chars=1000,
+)
 
-    for _ in range(5):
-        st.write("")
+col1, col2 = st.columns([3, 1])
+col1.write("")
+col2.write("")
 
-    # Define custom CSS
-    text_input_style = """
-        <style>
-            div[data-baseweb="textarea"] textarea {
-                background-color: black;
-                color: white;
-            }
-            .stButton button {
-                background-color: black;
-                color: white;
-                margin-left: 10px;
-            }
-            .stAlert {
-                background-color: black !important;
-                color: white !important;
-            }
-        </style>
-    """
+# Prompt the user for their API key
+st.sidebar.subheader("OpenAI API Key")
+api_key = st.sidebar.text_input(
+    "Enter your OpenAI API key",
+    type="password",
+    value=st.session_state.get("api_key", "")
+    if st.session_state.get("api_key") is not None
+    else "",
+)
 
-    # Create input box and submit button
-    st.markdown(text_input_style, unsafe_allow_html=True)
-    text_input = st.text_area(
-        "Enter text here",
-        value=st.session_state.get("text_input", ""),
-        height=200,
-        key="text_input",
-        max_chars=1000,
-    )
+submit_disabled = not (api_key and text_input)
+submit_button = col2.button("Submit", disabled=submit_disabled)
 
-    col1, col2 = st.columns([3, 1])
-    col1.write("")
-    col2.write("")
+if api_key:
+    # Set the API key in session state
+    st.session_state["api_key"] = api_key
 
-    # Prompt the user for their API key
-    st.sidebar.subheader("OpenAI API Key")
-    api_key = st.sidebar.text_input(
-        "Enter your OpenAI API key",
-        type="password",
-        value=st.session_state.get("api_key", "")
-        if st.session_state.get("api_key") is not None
-        else "",
-    )
+    # Create a pop-up notification
+    st.success("API key set successfully")
 
-    submit_disabled = not (api_key and text_input)
-    submit_button = col2.button("Submit", disabled=submit_disabled)
+    # Enable/disable submit button based on input text
+    submit_disabled = not text_input
+    st.session_state["submit_disabled"] = submit_disabled
 
-    if api_key:
-        # Set the API key in session state
-        st.session_state["api_key"] = api_key
+# When api key and text were given
+if api_key and text_input:
+    # Handle the submit button when pressed
+    if submit_button:
+        handle_submit(text_input)
 
-        # Create a pop-up notification
-        st.success("API key set successfully")
+# Create the warning placeholder
+if "warning_placeholder" not in st.session_state:
+    st.session_state["warning_placeholder"] = st.empty()
 
-        # Enable/disable submit button based on input text
-        submit_disabled = not text_input
-        st.session_state["submit_disabled"] = submit_disabled
+# Update the warning message using the callback function
+chars_left = 30 - len(st.session_state.get("text_input", ""))
+update_warning(chars_left)
 
-    # When api key and text were given
-    if api_key and text_input:
-        # Handle the submit button when pressed
-        if submit_button:
-            handle_submit(text_input)
+# Display the hyperlink within the sidebar
+st.sidebar.write(
+    "If you do not remember your API key, get it from [here](https://platform.openai.com/account/api-keys)"
+)
 
-    # Create the warning placeholder
-    if "warning_placeholder" not in st.session_state:
-        st.session_state["warning_placeholder"] = st.empty()
-
-    # Update the warning message using the callback function
-    chars_left = 30 - len(st.session_state.get("text_input", ""))
-    update_warning(chars_left)
-
-    # Display the hyperlink within the sidebar
-    st.sidebar.write(
-        "If you do not remember your API key, get it from [here](https://platform.openai.com/account/api-keys)"
-    )
-
-    st.sidebar.warning(
-        "After making changes to the GUI, be sure to click on the background to ensure that Streamlit updates the interface"
-    )
-
-
-if __name__ == "__main__":
-    main()
+st.sidebar.warning(
+    "After making changes to the GUI, be sure to click on the background to ensure that Streamlit updates the interface"
+)
