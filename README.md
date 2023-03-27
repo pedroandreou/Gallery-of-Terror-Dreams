@@ -45,20 +45,21 @@ sudo kill PID
 
 
 ## :whale: Docker
-#### How to run the two containers under the same network for the first time:
+#### How to run the multi-container application:
 ```
-## Linux
-./build-and-run.sh
+## RUN LOCALLY
+docker-compose up -d --build --no-cache # If the variable is not set, it defaults to stackdemo_local-network, which is the network used for local development
 
 
-## Windows
-cmd.exe /C build-and-run.bat
+## DEPLOYMENT
+export NETWORK_NAME=stackdemo_deployment-network
+docker stack deploy --compose-file docker-compose.yml --with-registry-auth --orchestrator swarm mystack
 ```
 
 #### Handy commands:
 ```
 ## UP
-docker-compose up -d
+docker-compose up -d --build --no-cache
 docker-compose logs -f --tail=100 --no-color
 
 
@@ -75,6 +76,9 @@ docker image rm $(docker image ls -a -q)
 
 # OR REMOVING ALL RUNNING AND STOPPED CONTAINERS
 docker rm -vf $(docker ps -aq)
+
+## FIND THE CUSTOM NNETWORKS THAT YOU HAVE CREATED
+docker network ls --filter type=custom
 ```
 
 
