@@ -1,5 +1,6 @@
 import base64
 import os
+import re
 import string
 from pathlib import Path
 
@@ -68,11 +69,14 @@ def handle_submit(text):
         # Remove leading and trailing white space from the text
         text = text.strip()
 
+        # Convert to lowercase
+        text = text.lower()
+
         # Remove punctuation
         text = text.translate(str.maketrans("", "", string.punctuation))
 
-        # Convert to lowercase
-        text = text.lower()
+        # Split input string into tokens
+        tokens = text.split()
 
         # Tokenize the text
         tokens = word_tokenize(text)
@@ -81,11 +85,13 @@ def handle_submit(text):
         stop_words = set(stopwords.words("english"))
         tokens = [token for token in tokens if not token in stop_words]
 
-        # Remove special characters
-        tokens = [token.encode("ascii", "ignore").decode("utf-8") for token in tokens]
+        # Define a regular expression pattern to match special characters
+        pattern = r"[^A-Za-z]+"
 
-        # Join the tokens back into a string
-        preprocessed_text = " ".join(tokens)
+        # Remove special characters from each token
+        clean_tokens = [re.sub(pattern, "", token) for token in tokens]
+
+        preprocessed_text = " ".join(clean_tokens)
 
         return preprocessed_text
 
@@ -103,37 +109,46 @@ def handle_submit(text):
         unsafe_allow_html=True,
     )
 
-    headers = {"Content-Type": "application/json"}
-
-    api_url = (
-        "http://back-end:8000/create-creepy-story"
-        if os.environ.get("DOCKER_CONTAINER")
-        else "http://localhost:8000/create-creepy-story"
-    )
-    data = {
-        "input_text": preprocess_text(text),
-        "openai_key": st.session_state["api_key"],
-    }
-
     st.markdown(
         '<div class="custom-spinner-label">Processing the request...</div>',
         unsafe_allow_html=True,
     )
     try:
         with st.spinner():
-            video_url = requests.post(api_url, headers=headers, json=data).json()[
-                "video_url"
-            ]
+            # Get the generated mp4 video
+            base_url = (
+                "http://back-end:8000"
+                if os.environ.get("DOCKER_CONTAINER")
+                else "http://localhost:8000"
+            )
+            api_url = f"{base_url}/create-creepy-story"
+            headers = {"Content-Type": "application/json"}
 
-            response = requests.get(video_url)
+            data = {
+                "input_text": preprocess_text(text),
+                "openai_key": st.session_state["api_key"],
+            }
+            response_data = requests.post(api_url, headers=headers, json=data).json()
 
-            st.video(response.content)
+            if "error" in response_data:
+                error_message = response_data["error"]
+                st.error(f"An error occurred: {error_message}")
+            else:
+                video_id = response_data["video_id"]
 
-            st.success("Request completed")
+                api_url = f"{base_url}/create-creepy-story/videos/{video_id}.mp4"
+                response = requests.get(api_url)
+
+                content_type = response.headers.get("Content-Type")
+                if content_type == "application/json":
+                    error_message = response.json()["error"]
+                    st.error(f"An error occurred: {error_message}")
+                elif content_type == "video/mp4":
+                    st.video(response.content)
+                    st.success("Request completed")
+
     except requests.exceptions.RequestException as e:
-        st.error(
-            f"There are three potential errors that may occur: incorrect API key, rejection of request due to system safety protocols, or high traffic on the system."
-        )
+        st.error(f"An unexpected error occured: {e}")
 
 
 # Initialize session state variables
