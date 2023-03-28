@@ -115,7 +115,7 @@ def handle_submit(text):
     )
     try:
         with st.spinner():
-            # Get the generated mp4 video
+            # Generate the video
             base_url = (
                 "http://back-end:8000"
                 if os.environ.get("DOCKER_CONTAINER")
@@ -136,6 +136,7 @@ def handle_submit(text):
             else:
                 video_id = response_data["video_id"]
 
+                # Get the generated video
                 api_url = f"{base_url}/create-creepy-story/videos/{video_id}.mp4"
                 response = requests.get(api_url)
 
@@ -144,6 +145,7 @@ def handle_submit(text):
                     error_message = response.json()["error"]
                     st.error(f"An error occurred: {error_message}")
                 elif content_type == "video/mp4":
+                    # Show the video on the ui
                     st.video(response.content)
                     st.success("Request completed")
 

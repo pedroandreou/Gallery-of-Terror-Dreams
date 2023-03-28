@@ -4,13 +4,7 @@ To be added
 
 ## :notebook_with_decorative_cover: Notes
 - Did not utilize any Prompt Engineering technique
-- Do not display the specific back-end error message to the front-end. Instead, provide user with three error options to identify the issue
-```
-There are three potential errors that may occur:
-1. incorrect API key
-2. rejection of request due to system safety protocols
-3. high traffic on the system
-```
+
 
 ## :building_construction: Environment
 
