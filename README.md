@@ -2,9 +2,8 @@
 To be added
 
 
-## Notes
-- Did not utilize any Prompt Engineering techniques
-- Do not display the specific back-end error message to the front-end. Instead, provide user with three error options to identify the issue
+## :notebook_with_decorative_cover: Notes
+- Did not utilize any Prompt Engineering technique
 
 
 ## :building_construction: Environment
