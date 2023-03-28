@@ -38,7 +38,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
         return bullet_dict
 
-    prompt = f"Generate five bullet points to narrate an unsettling horror movie in an analog style of: {text}"
+    prompt = f"Generate five bullet points to narrate a horror story of: {text}"
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -47,7 +47,7 @@ def generate_bullet_points_using_gpt3(text: str):
         n=2,
         stop=None,
         top_p=1,
-        temperature=0.5,
+        temperature=0.4,
     )
 
     bullet_dict = generate_output_dictionary(response.choices[0].text.lstrip())
@@ -56,7 +56,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
 
 def generate_imgs_using_dalle2(count: int, text: str):
-    prompt = f"Create an unsettling horror movie in an analog style for: {text}"
+    prompt = f"Create an unsettling analog horror story for: {text}"
 
     response = openai.Image.create(
         prompt=prompt,
@@ -69,8 +69,9 @@ def generate_imgs_using_dalle2(count: int, text: str):
     file_path = Path(IMAGE_DIR) / f"best_{count}.png"
 
     for i, image_dict in enumerate(response["data"]):
-        # Save the third photo's JSON only as the third
-        # generation is usually better than the previous two
+        # Save only the third photo's JSON as a PNG
+        # since the third generation is usually better
+        # than the previous two
         if i == 2:
             image_data = b64decode(image_dict["b64_json"])
 

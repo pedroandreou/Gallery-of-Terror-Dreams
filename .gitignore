@@ -1,6 +1,5 @@
-# Venv, direnv
+# Virtual envs
 .env
-.envrc
 .venv
 
 # IDEs

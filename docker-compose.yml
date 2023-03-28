@@ -3,24 +3,26 @@ version: "3"
 services:
   front-end:
     container_name: front-end
+    image: thedockerman99/gallery-of-terror-dreams:front-end
     build:
       context: .
       dockerfile: ./src/front-end/Dockerfile
       args:
         - requirements=./unpinned_requirements.txt
     volumes:
-      - ./src/front-end:/code/src/front-end
+      - ./src/front-end:/code/src/front-end:ro
     ports:
       - "8080:8080"
-    restart: always
+    restart: unless-stopped
     networks:
-      - my-network
+      - ${NETWORK_NAME:-stackdemo_local-network}
     environment:
       - DOCKER_CONTAINER=True
     command: streamlit run --server.port 8080 --server.enableCORS false --server.enableXsrfProtection false /code/src/front-end/app.py
 
   back-end:
     container_name: back-end
+    image: thedockerman99/gallery-of-terror-dreams:back-end
     build:
       context: .
       dockerfile: ./src/back-end/Dockerfile
@@ -30,13 +32,15 @@ services:
       - ./src/back-end:/code/src/back-end
     ports:
       - "8000:8000"
-    restart: always
+    restart: unless-stopped
     networks:
-      - my-network
+      - ${NETWORK_NAME:-stackdemo_local-network}
     environment:
       - DOCKER_CONTAINER=True
     command: uvicorn creepy_story_generator:app --host 0.0.0.0 --port 8000 --reload
 
 networks:
-  my-network:
+  stackdemo_local-network:
     driver: bridge
+  stackdemo_deployment-network:
+    driver: overlay
