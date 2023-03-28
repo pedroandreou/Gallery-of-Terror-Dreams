@@ -2,7 +2,6 @@ import base64
 import os
 import string
 from pathlib import Path
-from urllib.parse import urljoin
 
 import nltk
 import requests
@@ -11,17 +10,23 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from PIL import Image
 
-if not nltk.data.path:
-    nltk.download("stopwords")
+try:
+    nltk.data.find("tokenizers/punkt")
+except LookupError:
     nltk.download("punkt")
+
+try:
+    nltk.data.find("corpora/stopwords")
+except LookupError:
+    nltk.download("stopwords")
 
 
 current_path = Path(__file__).resolve().parent
 
 # Change the webpage name and icon
 web_icon_path = current_path / "images/texas_icon.jpg"
-with Image.open(web_icon_path) as web_icon:
-    st.set_page_config(page_title="Gallery of Terro Dreams", page_icon=web_icon)
+web_icon = Image.open(web_icon_path)
+st.set_page_config(page_title="Gallery of Terro Dreams", page_icon=web_icon)
 
 
 def add_bg_from_local(image_file):
@@ -84,11 +89,24 @@ def handle_submit(text):
 
         return preprocessed_text
 
-    # Make a request to the backend API
+    # Custom CSS style for the spinner
+    st.markdown(
+        """
+        <style>
+            .custom-spinner-label {
+                font-size: 20px;
+                color: red;
+                font-weight: bold;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     headers = {"Content-Type": "application/json"}
 
     api_url = (
-        urljoin("http://back-end:8000/", "create-creepy-story")
+        "http://back-end:8000/create-creepy-story"
         if os.environ.get("DOCKER_CONTAINER")
         else "http://localhost:8000/create-creepy-story"
     )
@@ -97,15 +115,25 @@ def handle_submit(text):
         "openai_key": st.session_state["api_key"],
     }
 
+    st.markdown(
+        '<div class="custom-spinner-label">Processing the request...</div>',
+        unsafe_allow_html=True,
+    )
     try:
-        video_url = requests.post(api_url, headers=headers, json=data).json()[
-            "video_url"
-        ]
+        with st.spinner():
+            video_url = requests.post(api_url, headers=headers, json=data).json()[
+                "video_url"
+            ]
 
-        response = requests.get(video_url)
-        st.video(response.content)
+            response = requests.get(video_url)
+
+            st.video(response.content)
+
+            st.success("Request completed")
     except requests.exceptions.RequestException as e:
-        st.error(f"Error: {e}")
+        st.error(
+            f"There are three potential errors that may occur: incorrect API key, rejection of request due to system safety protocols, or high traffic on the system."
+        )
 
 
 # Initialize session state variables
@@ -114,7 +142,7 @@ if "text_input" not in st.session_state:
 if "api_key" not in st.session_state:
     st.session_state["api_key"] = None
 if "submit_disabled" not in st.session_state:
-    st.session_state["submit_disabled"] = True
+    st.session_state["submit_disabled"] = False
 
 # Center the title horizontally
 st.markdown(
@@ -185,7 +213,7 @@ if api_key:
 # When api key and text were given
 if api_key and text_input:
     # Handle the submit button when pressed
-    if submit_button:
+    if submit_button and not st.session_state["submit_disabled"]:
         handle_submit(text_input)
 
 # Create the warning placeholder

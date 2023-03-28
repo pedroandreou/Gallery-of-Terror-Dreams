@@ -2,6 +2,11 @@
 To be added
 
 
+## Notes
+- Did not utilize any Prompt Engineering techniques
+- Do not display the specific back-end error message to the front-end. Instead, provide user with three error options to identify the issue
+
+
 ## :building_construction: Environment
 
 ### :house: You should create a virtualenv
@@ -12,6 +17,7 @@ make virtualenv
 
 ## Windows
 python -m venv .venv
+pip install -r requirements.txt
 ```
 
 
@@ -29,7 +35,7 @@ source ./.venv/Scripts/activate
 ### :house_with_garden: How to update the requirements
 ```
 ## Linux
-make update-requirements-txt (For reproducibility)
+make update-requirements-txt
 
 
 ## Windows
@@ -47,29 +53,31 @@ sudo kill PID
 ## :whale: Docker
 #### How to run the multi-container application:
 ```
-## RUN LOCALLY
-docker-compose up -d --build --no-cache # If the variable is not set, it defaults to stackdemo_local-network, which is the network used for local development
+## RUN IT ON A SINGLE DOCKER HOST LOCALLY
+docker-compose up -d # If the variable is not set, it defaults to stackdemo_local-network, which is the network used for local development
+docker-compose logs -f --tail=100 --no-color
+
+## DOWN
+docker-compose down --volumes
 
 
-## DEPLOYMENT
+
+## RUN IT ON A GROUP OF DOCKER HOSTS THAT ARE JOINED TOGETHER INTO A SINGLE VIRTUAL HOST (SWARM CLUSTER)
+docker swarm init
+docker service create --name registry --publish published=5000,target=5000 registry:2
 export NETWORK_NAME=stackdemo_deployment-network
 docker stack deploy --compose-file docker-compose.yml --with-registry-auth --orchestrator swarm mystack
+
+## DOWN
+docker stack rm mystack
+docker service rm registry
+docker swarm leave --force
 ```
 
 #### Handy commands:
 ```
-## UP
-docker-compose up -d --build --no-cache
-docker-compose logs -f --tail=100 --no-color
-
-
-## DOWN
-docker-compose down
-
-
-## OPTIONAL FOR REBUILDING THE IMAGES
-docker-compose build
-
+## PUSH THE GENERATED IMGS TO THE REGISTRY
+docker-compose push
 
 ## OR DELETING ALL THE LOCAL IMGS
 docker image rm $(docker image ls -a -q)

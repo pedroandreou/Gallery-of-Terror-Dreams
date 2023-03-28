@@ -29,7 +29,7 @@ services:
       args:
         - requirements=./unpinned_requirements.txt
     volumes:
-      - ./src/back-end:/code/src/back-end:ro
+      - ./src/back-end:/code/src/back-end
     ports:
       - "8000:8000"
     restart: unless-stopped
