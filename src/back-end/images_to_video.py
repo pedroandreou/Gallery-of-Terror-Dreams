@@ -16,7 +16,7 @@ class Video:
         self.size = size
         self.current_path = Path(__file__).parent.absolute()
         self.image_dir = self.current_path / "png_images"
-        self.audio_file = self.current_path / "audio" / "audio.mp3"
+        self.audio_file = self.current_path / "audio" / "texas_trailer.mp3"
         self.flash_video_file = self.current_path / "videos" / "flash_video.mp4"
         self.final_video_file = self.current_path / "videos" / "final_video.mp4"
 

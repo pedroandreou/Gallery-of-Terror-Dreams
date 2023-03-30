@@ -40,7 +40,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
         return bullet_dict
 
-    prompt = f"Generate five bullet points to narrate a horror story of: {text}"
+    prompt = f"Generate five bullet points to narrate a horror style story of: {text}"
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -58,7 +58,7 @@ def generate_bullet_points_using_gpt3(text: str):
 
 
 def generate_imgs_using_dalle2(count: int, text: str):
-    prompt = f"Create an unsettling analog horror story for: {text}"
+    prompt = f"Create an unsettling analog style story for: {text}"
 
     response = openai.Image.create(
         prompt=prompt,

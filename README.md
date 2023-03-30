@@ -4,6 +4,7 @@ To be added
 
 ## :notebook_with_decorative_cover: Notes
 - Did not utilize any Prompt Engineering technique :sleeping:
+- Probs had to find a way to separate the requirements for each service as each image is built out of all the total requirements
 
 
 ## :building_construction: Environment

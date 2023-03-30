@@ -13,12 +13,12 @@ from PIL import Image
 
 try:
     nltk.data.find("tokenizers/punkt")
-except LookupError:
+except (LookupError, OSError):
     nltk.download("punkt")
 
 try:
     nltk.data.find("corpora/stopwords")
-except LookupError:
+except (LookupError, OSError):
     nltk.download("stopwords")
 
 
@@ -27,7 +27,16 @@ current_path = Path(__file__).resolve().parent
 # Change the webpage name and icon
 web_icon_path = current_path / "images/texas_icon.jpg"
 web_icon = Image.open(web_icon_path)
-st.set_page_config(page_title="Gallery of Terro Dreams", page_icon=web_icon)
+st.set_page_config(
+    page_title="Gallery of Terro Dreams",
+    page_icon=web_icon,
+    initial_sidebar_state="expanded",
+)
+
+# Add audio player
+audio_file = open(f"{current_path}/audio/exorcist_theme.mp3", "rb")
+audio_bytes = audio_file.read()
+st.audio(audio_bytes, format="audio/mp3", start_time=0)
 
 
 def add_bg_from_local(image_file):
