@@ -20,4 +20,4 @@ COPY ./src/front-end /code/src/front-end
 ENV PYTHONPATH "${PYTHONPATH}:/code/src/front-end"
 
 # Start the Streamlit app on container startup
-CMD streamlit run --server.port 8080 --server.enableCORS false --server.enableXsrfProtection false /code/src/front-end/app.py
+CMD streamlit run /code/src/front-end/app.py --server.port 8080 --theme.base="dark" --browser.gatherUsageStats=false --logger.level="error"

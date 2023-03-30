@@ -3,6 +3,7 @@ import os
 import re
 import string
 from pathlib import Path
+from time import sleep
 
 import nltk
 import requests
@@ -124,39 +125,42 @@ def handle_submit(text):
     )
     try:
         with st.spinner():
-            # Generate the video
-            base_url = (
-                "http://back-end:8000"
-                if os.environ.get("DOCKER_CONTAINER")
-                else "http://localhost:8000"
-            )
-            api_url = f"{base_url}/create-creepy-story"
-            headers = {"Content-Type": "application/json"}
+            # # Generate the video
+            # base_url = (
+            #     "http://back-end:8000"
+            #     if os.environ.get("DOCKER_CONTAINER")
+            #     else "http://localhost:8000"
+            # )
+            # api_url = f"{base_url}/create-creepy-story"
+            # headers = {"Content-Type": "application/json"}
 
-            data = {
-                "input_text": preprocess_text(text),
-                "openai_key": st.session_state["api_key"],
-            }
-            response_data = requests.post(api_url, headers=headers, json=data).json()
+            # data = {
+            #     "input_text": preprocess_text(text),
+            #     "openai_key": st.session_state["api_key"],
+            # }
+            # response_data = requests.post(api_url, headers=headers, json=data).json()
 
-            if "error" in response_data:
-                error_message = response_data["error"]
-                st.error(f"An error occurred: {error_message}")
-            else:
-                video_id = response_data["video_id"]
+            # if "error" in response_data:
+            #     error_message = response_data["error"]
+            #     st.error(f"An error occurred: {error_message}")
+            # else:
+            #     video_id = response_data["video_id"]
 
-                # Get the generated video
-                api_url = f"{base_url}/create-creepy-story/videos/{video_id}.mp4"
-                response = requests.get(api_url)
+            #     # Get the generated video
+            #     api_url = f"{base_url}/create-creepy-story/videos/{video_id}.mp4"
+            #     response = requests.get(api_url)
 
-                content_type = response.headers.get("Content-Type")
-                if content_type == "application/json":
-                    error_message = response.json()["error"]
-                    st.error(f"An error occurred: {error_message}")
-                elif content_type == "video/mp4":
-                    # Show the video on the ui
-                    st.video(response.content)
-                    st.success("Request completed")
+            #     content_type = response.headers.get("Content-Type")
+            #     if content_type == "application/json":
+            #         error_message = response.json()["error"]
+            #         st.error(f"An error occurred: {error_message}")
+            #     elif content_type == "video/mp4":
+            #         # Show the video on the ui
+            #         st.video(response.content)
+            #         st.success("Request completed")
+            sleep(10)
+            # Disable the submit button
+            st.session_state["submit_disabled"] = False
 
     except requests.exceptions.RequestException as e:
         st.error(f"An unexpected error occured: {e}")
@@ -240,6 +244,9 @@ if api_key:
 if api_key and text_input:
     # Handle the submit button when pressed
     if submit_button and not st.session_state["submit_disabled"]:
+        # Disable the submit button
+        st.session_state["submit_disabled"] = True
+
         handle_submit(text_input)
 
 # Create the warning placeholder
