@@ -38,7 +38,7 @@ make update-requirements-txt
 
 
 ## Windows
-cmd.exe /C uninstall_install_requirements.bat
+cmd.exe /C update_requirements.bat
 ```
 
 
