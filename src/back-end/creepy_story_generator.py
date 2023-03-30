@@ -62,7 +62,7 @@ def generate_imgs_using_dalle2(count: int, text: str):
 
     response = openai.Image.create(
         prompt=prompt,
-        n=3,  # Generate 3 images
+        n=2,  # Generate 2 images
         size="256x256",
         response_format="b64_json",
     )
@@ -71,10 +71,10 @@ def generate_imgs_using_dalle2(count: int, text: str):
     file_path = Path(IMAGE_DIR) / f"best_{count}.png"
 
     for i, image_dict in enumerate(response["data"]):
-        # Save only the third photo's JSON as a PNG
-        # since the third generation is usually better
-        # than the previous two
-        if i == 2:
+        # Save only the second photo's JSON as a PNG
+        # since the second generation is usually better
+        # than the first one
+        if i == 1:
             image_data = b64decode(image_dict["b64_json"])
 
             with open(file_path, mode="wb") as png:
@@ -82,7 +82,7 @@ def generate_imgs_using_dalle2(count: int, text: str):
 
 
 @app.post("/create-creepy-story", response_class=JSONResponse, status_code=200)
-async def create_creepy_story(payload: InputPayload = Body(None)):
+def create_creepy_story(payload: InputPayload = Body(None)):
     """
     Process the data and generate the video file
     Save the video file on the server with a unique name or identifier
@@ -133,7 +133,7 @@ async def create_creepy_story(payload: InputPayload = Body(None)):
 
 
 @app.get("/create-creepy-story/videos/{video_id}")
-async def serve_video(video_id: str):
+def serve_video(video_id: str):
     """
     Locate the video file on the server using the video_id
     Read the video file in binary mode

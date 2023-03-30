@@ -36,7 +36,7 @@ st.set_page_config(
 # Add audio player
 audio_file = open(f"{current_path}/audio/exorcist_theme.mp3", "rb")
 audio_bytes = audio_file.read()
-st.audio(audio_bytes, format="audio/mp3", start_time=0)
+st.sidebar.audio(audio_bytes, format="audio/mp3", start_time=0)
 
 
 def add_bg_from_local(image_file):
