@@ -1,3 +1,5 @@
+:: Consumes considerable time since it uninstalls all requirements and reinstalls them
+:: A more efficient script is needed, one that deletes and recreates the virtual environment
 @echo off
 
 :: Uninstall all packages in the current virtual environment

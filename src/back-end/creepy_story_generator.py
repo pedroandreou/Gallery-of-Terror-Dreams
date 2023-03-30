@@ -148,7 +148,7 @@ async def serve_video(video_id: str):
             if os.environ.get("DOCKER_CONTAINER")
             else os.path.dirname(__file__)
         )
-        video_file_path = os.path.join(base_path, "videos", f"{video_id}.mp4")
+        video_file_path = os.path.join(base_path, "videos", video_id)
 
         # Open the video file in binary mode
         with open(video_file_path, "rb") as video_file:
