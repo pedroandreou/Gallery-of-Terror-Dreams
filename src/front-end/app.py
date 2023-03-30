@@ -3,7 +3,6 @@ import os
 import re
 import string
 from pathlib import Path
-from time import sleep
 
 import nltk
 import requests
@@ -125,42 +124,40 @@ def handle_submit(text):
     )
     try:
         with st.spinner():
-            # # Generate the video
-            # base_url = (
-            #     "http://back-end:8000"
-            #     if os.environ.get("DOCKER_CONTAINER")
-            #     else "http://localhost:8000"
-            # )
-            # api_url = f"{base_url}/create-creepy-story"
-            # headers = {"Content-Type": "application/json"}
+            # Generate the video
+            base_url = (
+                "http://back-end:8000"
+                if os.environ.get("DOCKER_CONTAINER")
+                else "http://localhost:8000"
+            )
+            api_url = f"{base_url}/create-creepy-story"
+            headers = {"Content-Type": "application/json"}
 
-            # data = {
-            #     "input_text": preprocess_text(text),
-            #     "openai_key": st.session_state["api_key"],
-            # }
-            # response_data = requests.post(api_url, headers=headers, json=data).json()
+            data = {
+                "input_text": preprocess_text(text),
+                "openai_key": st.session_state["api_key"],
+            }
+            response_data = requests.post(api_url, headers=headers, json=data).json()
 
-            # if "error" in response_data:
-            #     error_message = response_data["error"]
-            #     st.error(f"An error occurred: {error_message}")
-            # else:
-            #     video_id = response_data["video_id"]
+            if "error" in response_data:
+                error_message = response_data["error"]
 
-            #     # Get the generated video
-            #     api_url = f"{base_url}/create-creepy-story/videos/{video_id}.mp4"
-            #     response = requests.get(api_url)
+                return error_message
+            else:
+                video_id = response_data["video_id"]
 
-            #     content_type = response.headers.get("Content-Type")
-            #     if content_type == "application/json":
-            #         error_message = response.json()["error"]
-            #         st.error(f"An error occurred: {error_message}")
-            #     elif content_type == "video/mp4":
-            #         # Show the video on the ui
-            #         st.video(response.content)
-            #         st.success("Request completed")
-            sleep(10)
-            # Disable the submit button
-            st.session_state["submit_disabled"] = False
+                # Get the generated video
+                api_url = f"{base_url}/create-creepy-story/videos/{video_id}.mp4"
+                response = requests.get(api_url)
+
+                content_type = response.headers.get("Content-Type")
+                if content_type == "application/json":
+                    error_message = response.json()["error"]
+
+                    return error_message
+                elif content_type == "video/mp4":
+                    # Show the video on the ui
+                    return response.content
 
     except requests.exceptions.RequestException as e:
         st.error(f"An unexpected error occured: {e}")
@@ -171,8 +168,6 @@ if "text_input" not in st.session_state:
     st.session_state["text_input"] = ""
 if "api_key" not in st.session_state:
     st.session_state["api_key"] = None
-if "submit_disabled" not in st.session_state:
-    st.session_state["submit_disabled"] = False
 
 # Center the title horizontally
 st.markdown(
@@ -202,7 +197,7 @@ text_input_style = """
     </style>
 """
 
-# Create input box and submit button
+# Create input box
 st.markdown(text_input_style, unsafe_allow_html=True)
 text_input = st.text_area(
     "Enter text here",
@@ -226,8 +221,28 @@ api_key = st.sidebar.text_input(
     else "",
 )
 
-submit_disabled = not (api_key and text_input)
-submit_button = col2.button("Submit", disabled=submit_disabled)
+
+# Enable the submit button when both the API key and text input are provided
+# Disable the submit button when either the API key or text input is missing
+# Special case: Temporarily disable the submit button when it is pressed and enabled
+# This prevents the user from sending multiple requests to OpenAI simultaneously
+if "submit_executed" not in st.session_state:
+    st.session_state["submit_executed"] = False
+
+if "submit_pressed" not in st.session_state:
+    st.session_state["submit_pressed"] = False
+
+if "video_output" not in st.session_state:
+    st.session_state["video_output"] = None
+
+if api_key and text_input and not st.session_state["submit_pressed"]:
+    st.session_state["submit_disabled"] = False
+else:
+    st.session_state["submit_disabled"] = True
+
+submit_button = col2.button(
+    "Submit", disabled=st.session_state["submit_disabled"], key="submit_button"
+)
 
 if api_key:
     # Set the API key in session state
@@ -236,18 +251,30 @@ if api_key:
     # Create a pop-up notification
     st.success("API key set successfully")
 
-    # Enable/disable submit button based on input text
-    submit_disabled = not text_input
-    st.session_state["submit_disabled"] = submit_disabled
-
 # When api key and text were given
 if api_key and text_input:
     # Handle the submit button when pressed
-    if submit_button and not st.session_state["submit_disabled"]:
+    if submit_button:
         # Disable the submit button
+        st.session_state["submit_pressed"] = True
         st.session_state["submit_disabled"] = True
+        st.experimental_rerun()  # Rerun the script to update the button state
 
-        handle_submit(text_input)
+# Call the handle_submit function after the button state has been updated and the button is pressed
+if st.session_state["submit_pressed"]:
+    st.session_state["submit_pressed"] = False
+    st.session_state["video_output"] = handle_submit(text_input)
+    st.session_state["submit_executed"] = True
+    st.experimental_rerun()  # Rerun the script to enable the button after the function execution
+
+# Display the video output if available
+if st.session_state["video_output"]:
+    if isinstance(st.session_state["video_output"], str):
+        st.error("An error occurred: ", st.session_state["video_output"])
+    else:
+        st.video(st.session_state["video_output"])
+        st.success("Request completed")
+
 
 # Create the warning placeholder
 if "warning_placeholder" not in st.session_state:
