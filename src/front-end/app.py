@@ -270,7 +270,7 @@ if st.session_state["submit_pressed"]:
 # Display the video output if available
 if st.session_state["video_output"]:
     if isinstance(st.session_state["video_output"], str):
-        st.error("An error occurred: ", st.session_state["video_output"])
+        st.error("An error occurred: " + str(st.session_state["video_output"]))
     else:
         st.video(st.session_state["video_output"])
         st.success("Request completed")

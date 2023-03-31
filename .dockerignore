@@ -9,8 +9,8 @@
 **/__pycache__
 
 # Ignore back-end dirs or files not needed in the container
-src/back-end/png_images/
-src/back-end/videos/final_video.mp4
+src/back-end/dalle2/png_images/
+src/back-end/video_generation/videos/final_video.mp4
 
 # Ignore other dirs and files
 docker-compose.yml

@@ -94,6 +94,10 @@ docker network ls --filter type=custom
     git clone https://github.com/pedroandreou/Gallery-of-Terror-Dreams.git
 
 
+## :scroll: License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+
 ## :tophat: Author
 <a href="https://www.linkedin.com/in/petrosandreou80/">
   <img align="center" src="https://img.shields.io/badge/Petros LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />

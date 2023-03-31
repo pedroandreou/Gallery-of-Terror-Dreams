@@ -1,12 +1,11 @@
 import os
-import re
 import shutil
-from base64 import b64decode
 from contextlib import suppress
 from pathlib import Path
-from typing import List
 
-import images_to_video
+from gpt3.gpt3 import generate_bullet_points_using_gpt3
+from dalle2.dalle2 import generate_imgs_using_dalle2
+from video_generation.images_to_video import Video
 import openai
 from fastapi import Body, FastAPI
 from fastapi.responses import JSONResponse, Response
@@ -24,61 +23,7 @@ app = FastAPI()
 
 
 current_path = Path(__file__).resolve().parent
-IMAGE_DIR = current_path / "png_images"
-
-
-def generate_bullet_points_using_gpt3(text: str):
-    def generate_output_dictionary(input_str: str) -> List[dict]:
-        output_list = [
-            re.sub(r"^[0-9]+\. ", "", s.strip()) for s in input_str.split("\n") if s
-        ]
-
-        bullet_dict = [
-            {"number": i + 1, "sentence": sentence}
-            for i, sentence in enumerate(output_list)
-        ]
-
-        return bullet_dict
-
-    prompt = f"Generate five bullet points to narrate a horror style story of: {text}"
-
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1000,
-        n=2,
-        stop=None,
-        top_p=1,
-        temperature=0.4,
-    )
-
-    bullet_dict = generate_output_dictionary(response.choices[0].text.lstrip())
-
-    return bullet_dict
-
-
-def generate_imgs_using_dalle2(count: int, text: str):
-    prompt = f"Create an unsettling analog style story for: {text}"
-
-    response = openai.Image.create(
-        prompt=prompt,
-        n=2,  # Generate 2 images
-        size="256x256",
-        response_format="b64_json",
-    )
-
-    # Construct the file path for the image file
-    file_path = Path(IMAGE_DIR) / f"best_{count}.png"
-
-    for i, image_dict in enumerate(response["data"]):
-        # Save only the second photo's JSON as a PNG
-        # since the second generation is usually better
-        # than the first one
-        if i == 1:
-            image_data = b64decode(image_dict["b64_json"])
-
-            with open(file_path, mode="wb") as png:
-                png.write(image_data)
+IMAGE_DIR = current_path / "dalle2" / "png_images"
 
 
 @app.post("/create-creepy-story", response_class=JSONResponse, status_code=200)
@@ -99,19 +44,19 @@ def create_creepy_story(payload: InputPayload = Body(None)):
         Path(IMAGE_DIR).mkdir(parents=True)
 
         # Generate bullet points
-        bullet_dict = generate_bullet_points_using_gpt3(payload.input_text)
+        bullet_dict = generate_bullet_points_using_gpt3(payload.input_text, payload.openai_key)
 
         # Generate creepy imgs
         for i, bullet_point in enumerate(bullet_dict):
-            generate_imgs_using_dalle2(i, bullet_point["sentence"])
+            generate_imgs_using_dalle2(i, bullet_point["sentence"], payload.openai_key, IMAGE_DIR)
 
         # # Generate a UUID for the video file
         # video_id = str(uuid.uuid4())
 
         # Generate output video
-        finale = images_to_video.Video((1024, 768))
-        finale.shape_changer()
-        finale.video_creator()
+        video = Video((1024, 768))
+        video.shape_changer()
+        video.video_creator()
     except openai.error.Timeout as e:
         return {"error": f"OpenAI API request timed out: {e}"}
     except openai.error.APIError as e:
@@ -132,7 +77,7 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     return {"video_id": "final_video"}
 
 
-@app.get("/create-creepy-story/videos/{video_id}")
+@app.get("/create-creepy-story/videos/{video_id}.mp4")
 def serve_video(video_id: str):
     """
     Locate the video file on the server using the video_id
@@ -144,11 +89,11 @@ def serve_video(video_id: str):
     try:
         # Set the video file path based on whether the code is running in a Docker container or locally
         base_path = (
-            "/code/src/back-end"
+            Path("/code/src/back-end")
             if os.environ.get("DOCKER_CONTAINER")
             else os.path.dirname(__file__)
         )
-        video_file_path = os.path.join(base_path, "videos", video_id)
+        video_file_path = os.path.join(base_path, "video_generation", "videos", f"{video_id}.mp4")
 
         # Open the video file in binary mode
         with open(video_file_path, "rb") as video_file:
