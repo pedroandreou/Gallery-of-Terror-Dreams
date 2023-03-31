@@ -10,7 +10,7 @@ services:
       args:
         - requirements=./unpinned_requirements.txt
     volumes:
-      - ./src/front-end:/code/src/front-end:ro
+      - ./src/front-end:/app:ro
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -18,7 +18,6 @@ services:
       - ${NETWORK_NAME:-stackdemo_local-network}
     environment:
       - DOCKER_CONTAINER=True
-    command: streamlit run /code/src/front-end/app.py --server.port 8080 --theme.base="dark" --browser.gatherUsageStats=false --logger.level="error"
 
   back-end:
     container_name: back-end
@@ -29,7 +28,7 @@ services:
       args:
         - requirements=./unpinned_requirements.txt
     volumes:
-      - ./src/back-end:/code/src/back-end  # Mounted as writable by default
+      - ./src/back-end:/app/src/back-end  # Mounted as writable by default
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -37,7 +36,6 @@ services:
       - ${NETWORK_NAME:-stackdemo_local-network}
     environment:
       - DOCKER_CONTAINER=True
-    command: uvicorn creepy_story_generator:app --host 0.0.0.0 --port 8000 --reload
 
 networks:
   stackdemo_local-network:
