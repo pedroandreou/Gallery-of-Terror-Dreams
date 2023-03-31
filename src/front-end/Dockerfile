@@ -29,14 +29,18 @@ COPY --from=build /usr/local /usr/local
 # Create a non-root user
 RUN groupadd -r nonroot && useradd -r -g nonroot nonroot
 
-# Change ownership of the /app directorywe
+# Change ownership of the /app directory
 RUN chown -R nonroot:nonroot /app
+
+# Create a directory for NLTK data and set permissions
+RUN mkdir -p /data/nltk_data && chown -R nonroot:nonroot /data/nltk_data
 
 # Switch to the non-root user
 USER nonroot
 
 # Set PYTHONPATH environment variable to include the front-end source code
 ENV PYTHONPATH "${PYTHONPATH}:/app"
+ENV DOCKER_CONTAINER 1
 
 # Expose port 8080 for Streamlit
 EXPOSE 8080

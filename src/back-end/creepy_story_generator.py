@@ -103,7 +103,7 @@ def serve_video(video_id: str):
 
     # Set the video file path based on whether the code is running in a Docker container or locally
     base_path = (
-        Path("/code/src/back-end")
+        Path("/app")
         if os.environ.get("DOCKER_CONTAINER")
         else os.path.dirname(__file__)
     )

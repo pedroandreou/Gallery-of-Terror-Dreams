@@ -11,18 +11,24 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from PIL import Image
 
-try:
-    nltk.data.find("tokenizers/punkt")
-except (LookupError, OSError):
-    nltk.download("punkt")
-
-try:
-    nltk.data.find("corpora/stopwords")
-except (LookupError, OSError):
-    nltk.download("stopwords")
-
-
 current_path = Path(__file__).resolve().parent
+
+base_path = Path("/data") if os.environ.get("DOCKER_CONTAINER") else current_path
+
+nltk_data_path = os.path.join(base_path, "nltk_data")
+os.makedirs(nltk_data_path, exist_ok=True)
+nltk.data.path.append(nltk_data_path)
+
+try:
+    nltk.data.find("tokenizers/punkt", nltk_data_path)
+except (LookupError, OSError):
+    nltk.download("punkt", download_dir=nltk_data_path)
+
+try:
+    nltk.data.find("corpora/stopwords", nltk_data_path)
+except (LookupError, OSError):
+    nltk.download("stopwords", download_dir=nltk_data_path)
+
 
 # Change the webpage name and icon
 web_icon_path = current_path / "images/texas_icon.jpg"

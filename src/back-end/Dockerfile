@@ -37,6 +37,7 @@ USER nonroot
 
 # Set PYTHONPATH environment variable to include the back-end source code
 ENV PYTHONPATH "${PYTHONPATH}:/app"
+ENV DOCKER_CONTAINER 1
 
 # Expose port 8000 for Uvicorn
 EXPOSE 8000
