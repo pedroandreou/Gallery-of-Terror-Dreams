@@ -1,13 +1,8 @@
 from pathlib import Path
 
 import numpy as np
-from moviepy.editor import (
-    AudioFileClip,
-    CompositeAudioClip,
-    ImageClip,
-    VideoFileClip,
-    concatenate_videoclips,
-)
+from moviepy.editor import (AudioFileClip, CompositeAudioClip, ImageClip,
+                            VideoFileClip, concatenate_videoclips)
 from PIL import Image
 
 
@@ -21,7 +16,7 @@ class Video:
         self.final_video_file = self.current_path / "videos" / "final_video.mp4"
 
     def shape_changer(self):
-        for filepath in Path(self.image_dir).glob('*.png'):
+        for filepath in Path(self.image_dir).glob("*.png"):
             with Image.open(filepath) as img:
                 img = img.resize(self.size)
                 if img.mode != "RGB":
@@ -29,7 +24,9 @@ class Video:
                 img.save(filepath)
 
     def video_creator(self):
-        image_files = [f for f in Path(self.image_dir).iterdir() if str(f).endswith(".png")]
+        image_files = [
+            f for f in Path(self.image_dir).iterdir() if str(f).endswith(".png")
+        ]
         duration = 1.25
 
         clips = []
@@ -41,7 +38,9 @@ class Video:
 
         video_clip = concatenate_videoclips(clips, method="compose")
 
-        audio_clip = AudioFileClip(str(self.audio_file)).set_duration(video_clip.duration)
+        audio_clip = AudioFileClip(str(self.audio_file)).set_duration(
+            video_clip.duration
+        )
         new_audioclip = CompositeAudioClip([audio_clip])
         video_clip = video_clip.set_audio(new_audioclip)
         video_clip.write_videofile(str(self.final_video_file), fps=24)

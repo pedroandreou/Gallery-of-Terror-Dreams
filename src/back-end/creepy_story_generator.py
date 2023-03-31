@@ -3,13 +3,13 @@ import shutil
 from contextlib import suppress
 from pathlib import Path
 
-from gpt3.gpt3 import generate_bullet_points_using_gpt3
-from dalle2.dalle2 import generate_imgs_using_dalle2
-from video_generation.images_to_video import Video
 import openai
+from dalle2.dalle2 import generate_imgs_using_dalle2
 from fastapi import Body, FastAPI
 from fastapi.responses import JSONResponse, Response
+from gpt3.gpt3 import generate_bullet_points_using_gpt3
 from pydantic import BaseModel
+from video_generation.images_to_video import Video
 
 # import uuid
 
@@ -44,11 +44,15 @@ def create_creepy_story(payload: InputPayload = Body(None)):
         Path(IMAGE_DIR).mkdir(parents=True)
 
         # Generate bullet points
-        bullet_dict = generate_bullet_points_using_gpt3(payload.input_text, payload.openai_key)
+        bullet_dict = generate_bullet_points_using_gpt3(
+            payload.input_text, payload.openai_key
+        )
 
         # Generate creepy imgs
         for i, bullet_point in enumerate(bullet_dict):
-            generate_imgs_using_dalle2(i, bullet_point["sentence"], payload.openai_key, IMAGE_DIR)
+            generate_imgs_using_dalle2(
+                i, bullet_point["sentence"], payload.openai_key, IMAGE_DIR
+            )
 
         # # Generate a UUID for the video file
         # video_id = str(uuid.uuid4())
@@ -93,7 +97,9 @@ def serve_video(video_id: str):
             if os.environ.get("DOCKER_CONTAINER")
             else os.path.dirname(__file__)
         )
-        video_file_path = os.path.join(base_path, "video_generation", "videos", f"{video_id}.mp4")
+        video_file_path = os.path.join(
+            base_path, "video_generation", "videos", f"{video_id}.mp4"
+        )
 
         # Open the video file in binary mode
         with open(video_file_path, "rb") as video_file:

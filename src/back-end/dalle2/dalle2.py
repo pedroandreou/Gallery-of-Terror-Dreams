@@ -1,6 +1,8 @@
-import openai
 from base64 import b64decode
 from pathlib import Path
+
+import openai
+
 
 def generate_imgs_using_dalle2(count: int, text: str, api_key: str, image_dir: Path):
     openai.api_key = api_key

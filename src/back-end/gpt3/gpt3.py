@@ -1,6 +1,8 @@
-import openai
 import re
 from typing import List
+
+import openai
+
 
 def generate_bullet_points_using_gpt3(text: str, openai_key: str):
     def generate_output_dictionary(input_str: str) -> List[dict]:
