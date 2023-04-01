@@ -8,6 +8,9 @@
 # Python
 **/__pycache__
 
+# NLTK dir
+**/nltk_data
+
 # Dir of the PNG imgs
 **/png_images
 
