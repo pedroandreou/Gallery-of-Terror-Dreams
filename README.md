@@ -1,8 +1,8 @@
-<h1 align="center" style="color:red;">Gallery of Terror Dreamms</h1>
+<h1 align="center" style="color:red;">Gallery of Terror Dreams</h1>
 
 
 ## 📰 Description
-Introducing Terror Dreams 😱🔪 - an app that masterfully weaves the chilling essence of Texas Chainsaw-style horror with the spine-tingling soundtrack of The Exorcist. Drawing inspiration from the 2003 Texas Chainsaw Massacre Official Trailer #1 (at 1:19) 🎬 and the eerie, iconic Exorcist music 🎶, this app transforms ordinary text into a blood-curdling, heart-pounding experience 💀.
+Introducing Terror Dreams 😱🔪 - an app that masterfully weaves the chilling essence of Texas Chainsaw-style horror with the spine-tingling soundtrack of The Exorcist. Drawing inspiration from [the 2003 Texas Chainsaw Massacre Official Trailer #1](https://www.youtube.com/watch?v=janre4HxsX4) (at 1:19) 🎬 and the eerie, iconic [Exorcist music](https://www.youtube.com/watch?v=Hj83ugShbic) 🎶, this app transforms ordinary text into a blood-curdling, heart-pounding experience 💀.
 
 Terror Dreams takes artistic liberties to craft a cinematic horror experience that captures your attention and enhances your senses 👻. With this app, you can now conjure the bone-chilling atmosphere of classic horror films right on your device 📱, giving you the power to share the thrill with friends or keep it all to yourself 🤫.
 
@@ -14,7 +14,7 @@ Dare to enter the gallery of Terror Dreams, where your text takes on a sinister 
 PS: Architecture: Semi-Modular/Organized Monolithic
 </blockquote>
 
-[Click here to view the GIF with sound](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
+[Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
 
 
 ## :notebook_with_decorative_cover: Notes
