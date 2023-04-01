@@ -8,9 +8,7 @@ Terror Dreams takes artistic liberties to craft a cinematic horror experience th
 
 Dare to enter the gallery of Terror Dreams, where your text takes on a sinister new life 🌑 and the line between reality and nightmare blurs 😨. Are you brave enough to embrace the darkness within? 🖤
 
-<p align="center">
-<img src="https://j.gifs.com/79BM9O.gif" alt="Your Image Description" width="1200" height="600" />
-</p>
+![Screenshot](https://github.com/pedroandreou/Gallery-of-Terror-Dreams/blob/master/demo/demo.gif)
 
 <blockquote>
 PS: Architecture: Semi-Modular/Organized Monolithic
