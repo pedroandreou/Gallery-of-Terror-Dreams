@@ -1,9 +1,12 @@
 ## 📰 Description
 To be added
 
+Architecture: Semi-Modular/Organized Monolithic
+
 
 ## :notebook_with_decorative_cover: Notes
-- Did not utilize any Prompt Engineering technique
+- Did not utilize any Prompt Engineering technique :sleeping:
+- Probs had to find a way to separate the requirements for each service as each image is built out of all the total requirements :sleeping:
 
 
 ## :building_construction: Environment
@@ -38,7 +41,7 @@ make update-requirements-txt
 
 
 ## Windows
-cmd.exe /C uninstall_install_requirements.bat
+cmd.exe /C update_requirements.bat
 ```
 
 
@@ -91,6 +94,10 @@ docker network ls --filter type=custom
 
 ## 🛠 Initialization & Setup
     git clone https://github.com/pedroandreou/Gallery-of-Terror-Dreams.git
+
+
+## :scroll: License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 
 ## :tophat: Author

@@ -11,23 +11,38 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from PIL import Image
 
-try:
-    nltk.data.find("tokenizers/punkt")
-except LookupError:
-    nltk.download("punkt")
-
-try:
-    nltk.data.find("corpora/stopwords")
-except LookupError:
-    nltk.download("stopwords")
-
-
 current_path = Path(__file__).resolve().parent
+
+base_path = Path("/data") if os.environ.get("DOCKER_CONTAINER") else current_path
+
+nltk_data_path = os.path.join(base_path, "nltk_data")
+os.makedirs(nltk_data_path, exist_ok=True)
+nltk.data.path.append(nltk_data_path)
+
+try:
+    nltk.data.find("tokenizers/punkt", nltk_data_path)
+except (LookupError, OSError):
+    nltk.download("punkt", download_dir=nltk_data_path)
+
+try:
+    nltk.data.find("corpora/stopwords", nltk_data_path)
+except (LookupError, OSError):
+    nltk.download("stopwords", download_dir=nltk_data_path)
+
 
 # Change the webpage name and icon
 web_icon_path = current_path / "images/texas_icon.jpg"
 web_icon = Image.open(web_icon_path)
-st.set_page_config(page_title="Gallery of Terro Dreams", page_icon=web_icon)
+st.set_page_config(
+    page_title="Gallery of Terro Dreams",
+    page_icon=web_icon,
+    initial_sidebar_state="expanded",
+)
+
+# Add audio player
+audio_file = open(f"{current_path}/audio/exorcist_theme.mp3", "rb")
+audio_bytes = audio_file.read()
+st.sidebar.audio(audio_bytes, format="audio/mp3", start_time=0)
 
 
 def add_bg_from_local(image_file):
@@ -132,7 +147,8 @@ def handle_submit(text):
 
             if "error" in response_data:
                 error_message = response_data["error"]
-                st.error(f"An error occurred: {error_message}")
+
+                return error_message
             else:
                 video_id = response_data["video_id"]
 
@@ -143,11 +159,11 @@ def handle_submit(text):
                 content_type = response.headers.get("Content-Type")
                 if content_type == "application/json":
                     error_message = response.json()["error"]
-                    st.error(f"An error occurred: {error_message}")
+
+                    return error_message
                 elif content_type == "video/mp4":
                     # Show the video on the ui
-                    st.video(response.content)
-                    st.success("Request completed")
+                    return response.content
 
     except requests.exceptions.RequestException as e:
         st.error(f"An unexpected error occured: {e}")
@@ -158,8 +174,6 @@ if "text_input" not in st.session_state:
     st.session_state["text_input"] = ""
 if "api_key" not in st.session_state:
     st.session_state["api_key"] = None
-if "submit_disabled" not in st.session_state:
-    st.session_state["submit_disabled"] = False
 
 # Center the title horizontally
 st.markdown(
@@ -189,7 +203,7 @@ text_input_style = """
     </style>
 """
 
-# Create input box and submit button
+# Create input box
 st.markdown(text_input_style, unsafe_allow_html=True)
 text_input = st.text_area(
     "Enter text here",
@@ -213,8 +227,28 @@ api_key = st.sidebar.text_input(
     else "",
 )
 
-submit_disabled = not (api_key and text_input)
-submit_button = col2.button("Submit", disabled=submit_disabled)
+
+# Enable the submit button when both the API key and text input are provided
+# Disable the submit button when either the API key or text input is missing
+# Special case: Temporarily disable the submit button when it is pressed and enabled
+# This prevents the user from sending multiple requests to OpenAI simultaneously
+if "submit_executed" not in st.session_state:
+    st.session_state["submit_executed"] = False
+
+if "submit_pressed" not in st.session_state:
+    st.session_state["submit_pressed"] = False
+
+if "video_output" not in st.session_state:
+    st.session_state["video_output"] = None
+
+if api_key and text_input and not st.session_state["submit_pressed"]:
+    st.session_state["submit_disabled"] = False
+else:
+    st.session_state["submit_disabled"] = True
+
+submit_button = col2.button(
+    "Submit", disabled=st.session_state["submit_disabled"], key="submit_button"
+)
 
 if api_key:
     # Set the API key in session state
@@ -223,15 +257,30 @@ if api_key:
     # Create a pop-up notification
     st.success("API key set successfully")
 
-    # Enable/disable submit button based on input text
-    submit_disabled = not text_input
-    st.session_state["submit_disabled"] = submit_disabled
-
 # When api key and text were given
 if api_key and text_input:
     # Handle the submit button when pressed
-    if submit_button and not st.session_state["submit_disabled"]:
-        handle_submit(text_input)
+    if submit_button:
+        # Disable the submit button
+        st.session_state["submit_pressed"] = True
+        st.session_state["submit_disabled"] = True
+        st.experimental_rerun()  # Rerun the script to update the button state
+
+# Call the handle_submit function after the button state has been updated and the button is pressed
+if st.session_state["submit_pressed"]:
+    st.session_state["submit_pressed"] = False
+    st.session_state["video_output"] = handle_submit(text_input)
+    st.session_state["submit_executed"] = True
+    st.experimental_rerun()  # Rerun the script to enable the button after the function execution
+
+# Display the video output if available
+if st.session_state["video_output"]:
+    if isinstance(st.session_state["video_output"], str):
+        st.error("An error occurred: " + str(st.session_state["video_output"]))
+    else:
+        st.video(st.session_state["video_output"])
+        st.success("Request completed")
+
 
 # Create the warning placeholder
 if "warning_placeholder" not in st.session_state:
