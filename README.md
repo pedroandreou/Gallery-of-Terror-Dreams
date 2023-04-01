@@ -12,9 +12,9 @@ Dare to enter the gallery of Terror Dreams, where your text takes on a sinister 
 <img src="https://j.gifs.com/79BM9O.gif" alt="Your Image Description" width="1200" height="600" />
 </p>
 
-<p align="center">Architecture: Semi-Modular/Organized Monolithic</p>
-
-<br>
+<blockquote>
+PS: Architecture: Semi-Modular/Organized Monolithic
+</blockquote>
 
 [Click here to view the GIF with sound](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
 
