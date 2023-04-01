@@ -9,8 +9,9 @@ Terror Dreams takes artistic liberties to craft a cinematic horror experience th
 Dare to enter the gallery of Terror Dreams, where your text takes on a sinister new life 🌑 and the line between reality and nightmare blurs 😨. Are you brave enough to embrace the darkness within? 🖤
 
 <p align="center">
-<img src="https://j.gifs.com/36x369.gif" alt="Your Image Description" width="1200" height="600" />
+<img src="https://j.gifs.com/79BM9O.gif" alt="Your Image Description" width="1200" height="600" />
 </p>
+[Click here to view the GIF with sound](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
 
 <blockquote>
 PS: Architecture: Semi-Modular/Organized Monolithic
@@ -19,7 +20,7 @@ PS: Architecture: Semi-Modular/Organized Monolithic
 
 ## :notebook_with_decorative_cover: Notes
 - Did not utilize any Prompt Engineering technique :sleeping:
-- Probs had to find a way to separate the requirements for each service as each image is built out of all the total requirements :sleeping:
+- Probs had to find a way to separate the requirements for each service as each image is built out of all the requirements :sleeping:
 
 
 ## :building_construction: Environment
@@ -93,12 +94,6 @@ docker swarm leave --force
 ```
 ## PUSH THE GENERATED IMGS TO THE REGISTRY
 docker-compose push
-
-## OR DELETING ALL THE LOCAL IMGS
-docker image rm $(docker image ls -a -q)
-
-# OR REMOVING ALL RUNNING AND STOPPED CONTAINERS
-docker rm -vf $(docker ps -aq)
 
 ## FIND THE CUSTOM NNETWORKS THAT YOU HAVE CREATED
 docker network ls --filter type=custom
