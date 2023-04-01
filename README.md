@@ -1,12 +1,27 @@
-## 📰 Description
-To be added
+<h1 align="center" style="color:red;">Gallery of Terror Dreamms</h1>
 
-Architecture: Semi-Modular/Organized Monolithic
+
+## 📰 Description
+Introducing Terror Dreams 😱🔪 - an app that masterfully weaves the chilling essence of Texas Chainsaw-style horror with the spine-tingling soundtrack of The Exorcist. Drawing inspiration from the 2003 Texas Chainsaw Massacre Official Trailer #1 (at 1:19) 🎬 and the eerie, iconic Exorcist music 🎶, this app transforms ordinary text into a blood-curdling, heart-pounding experience 💀.
+
+Terror Dreams takes artistic liberties to craft a cinematic horror experience that captures your attention and enhances your senses 👻. With this app, you can now conjure the bone-chilling atmosphere of classic horror films right on your device 📱, giving you the power to share the thrill with friends or keep it all to yourself 🤫.
+
+Dare to enter the gallery of Terror Dreams, where your text takes on a sinister new life 🌑 and the line between reality and nightmare blurs 😨. Are you brave enough to embrace the darkness within? 🖤
+
+<p align="center">
+<img src="https://j.gifs.com/79BM9O.gif" alt="Your Image Description" width="1200" height="600" />
+</p>
+
+<p align="center">Architecture: Semi-Modular/Organized Monolithic</p>
+
+<br>
+
+[Click here to view the GIF with sound](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
 
 
 ## :notebook_with_decorative_cover: Notes
 - Did not utilize any Prompt Engineering technique :sleeping:
-- Probs had to find a way to separate the requirements for each service as each image is built out of all the total requirements :sleeping:
+- Probs had to find a way to separate the requirements for each service as each image is built out of all the requirements :sleeping:
 
 
 ## :building_construction: Environment
@@ -19,7 +34,6 @@ make virtualenv
 
 ## Windows
 python -m venv .venv
-pip install -r requirements.txt
 ```
 
 
@@ -31,6 +45,7 @@ source ./.env/bin/activate
 
 ## Windows
 source ./.venv/Scripts/activate
+pip install -r requirements.txt
 ```
 
 
@@ -80,12 +95,6 @@ docker swarm leave --force
 ```
 ## PUSH THE GENERATED IMGS TO THE REGISTRY
 docker-compose push
-
-## OR DELETING ALL THE LOCAL IMGS
-docker image rm $(docker image ls -a -q)
-
-# OR REMOVING ALL RUNNING AND STOPPED CONTAINERS
-docker rm -vf $(docker ps -aq)
 
 ## FIND THE CUSTOM NNETWORKS THAT YOU HAVE CREATED
 docker network ls --filter type=custom

@@ -13,21 +13,21 @@ from PIL import Image
 
 current_path = Path(__file__).resolve().parent
 
-base_path = Path("/data") if os.environ.get("DOCKER_CONTAINER") else current_path
+base_nltk_path = Path("/data") if os.environ.get("DOCKER_CONTAINER") else current_path
 
-nltk_data_path = os.path.join(base_path, "nltk_data")
+nltk_data_path = os.path.join(base_nltk_path, "nltk_data")
 os.makedirs(nltk_data_path, exist_ok=True)
 nltk.data.path.append(nltk_data_path)
 
 try:
-    nltk.data.find("tokenizers/punkt", nltk_data_path)
+    nltk.data.find("tokenizers/punkt")
 except (LookupError, OSError):
-    nltk.download("punkt", download_dir=nltk_data_path)
+    nltk.download("punkt")
 
 try:
-    nltk.data.find("corpora/stopwords", nltk_data_path)
+    nltk.data.find("corpora/stopwords")
 except (LookupError, OSError):
-    nltk.download("stopwords", download_dir=nltk_data_path)
+    nltk.download("stopwords")
 
 
 # Change the webpage name and icon

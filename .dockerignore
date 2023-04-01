@@ -8,6 +8,9 @@
 # Ignore Python cache files
 **/__pycache__
 
+# Ignore front-end dir not needed in the container
+src/front-end/nltk_data/
+
 # Ignore back-end dirs or files not needed in the container
 src/back-end/dalle2/png_images/
 src/back-end/video_generation/videos/final_video.mp4
