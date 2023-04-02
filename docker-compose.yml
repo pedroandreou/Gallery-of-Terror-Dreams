@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: ./src/front-end/Dockerfile
       args:
-        - requirements=./unpinned_requirements.txt
+        - requirements=./pinned_requirements.txt
     volumes:
       - ./src/front-end:/app:ro
     ports:
@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: ./src/back-end/Dockerfile
       args:
-        - requirements=./unpinned_requirements.txt
+        - requirements=./pinned_requirements.txt
     volumes:
       - ./src/back-end:/app/src/back-end  # Mounted as writable by default
     ports:
