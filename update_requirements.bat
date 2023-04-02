@@ -18,7 +18,7 @@ set PYTHON=%VENV%\Scripts\python.exe
 %VENV%\Scripts\pip install --upgrade pip==22.2.2
 
 :: Install packages from the unpinned_requirements.txt file
-%VENV%\Scripts\pip install -r unpinned_requirements.txt
+%VENV%\Scripts\pip install -r pinned_requirements.txt
 
 :: Add a comment line to the requirements.txt file
 echo # Created automatically by make update-requirements-txt. Do not update manually! > requirements.txt

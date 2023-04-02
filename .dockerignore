@@ -21,3 +21,8 @@ docker-compose.yml
 .git
 .gitignore
 .isort.cfg
+
+# Ignore files for creating virtual envs
+unpinned_requirements.txt
+Makefile
+update_requirements.bat
