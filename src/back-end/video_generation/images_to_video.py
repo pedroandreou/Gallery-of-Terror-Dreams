@@ -7,13 +7,13 @@ from PIL import Image
 
 
 class Video:
-    def __init__(self, size):
+    def __init__(self, size, video_id):
         self.size = size
         self.current_path = Path(__file__).parent.absolute()
         self.image_dir = self.current_path.parent / "dalle2" / "png_images"
         self.audio_file = self.current_path / "audio" / "texas_trailer.mp3"
         self.flash_video_file = self.current_path / "videos" / "flash_video.mp4"
-        self.final_video_file = self.current_path / "videos" / "final_video.mp4"
+        self.final_video_file = Path(self.current_path, "videos", f"{video_id}.mp4")
 
     def shape_changer(self):
         for filepath in Path(self.image_dir).glob("*.png"):

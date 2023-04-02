@@ -82,13 +82,14 @@ def create_creepy_story(payload: InputPayload = Body(None)):
 
     # # Generate a UUID for the video file
     # video_id = str(uuid.uuid4())
+    video_id = "final_video"
 
     # Generate output video
-    video = Video((1024, 768))
+    video = Video((1024, 768), video_id)
     video.shape_changer()
     video.video_creator()
 
-    return {"video_id": "final_video"}
+    return {"video_id": video_id}
 
 
 @app.get("/create-creepy-story/videos/{video_id}.mp4")
