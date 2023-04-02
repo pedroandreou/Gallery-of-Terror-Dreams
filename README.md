@@ -47,6 +47,12 @@ pip install -r requirements.txt
 ```
 
 
+### 📌 How to pin the unpinned requirements
+```
+while read p; do pip show $p | grep -E "^Version: " | awk '{print $2}' | xargs -I % echo $p==%; done < unpinned_requirements.txt > pinned_requirements.txt
+```
+
+
 ### :house_with_garden: How to update the requirements
 ```
 ## Linux

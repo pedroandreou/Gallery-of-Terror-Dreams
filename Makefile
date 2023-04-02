@@ -21,7 +21,7 @@ update-requirements-txt: ## Update requirements.txt
 	@mkdir ${VENV}
 	${PYTHON} -m venv ${VENV}
 	${VENV}/bin/pip install --upgrade pip==22.2.2
-	${VENV}/bin/pip install -r unpinned_requirements.txt
+	${VENV}/bin/pip install -r pinned_requirements.txt
 	echo "# Created automatically by make update-requirements-txt. Do not update manually!" > requirements.txt
 	${VENV}/bin/pip freeze | grep -v pkg_resources >> requirements.txt
 
