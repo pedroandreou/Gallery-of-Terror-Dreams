@@ -25,6 +25,16 @@ update-requirements-txt: ## Update requirements.txt
 	echo "# Created automatically by make update-requirements-txt. Do not update manually!" > requirements.txt
 	${VENV}/bin/pip freeze | grep -v pkg_resources >> requirements.txt
 
+.PHONY: pin-requirements-txt
+pin-requirements-txt: ## Pin ./src/front-end/unpinned_requirements & ./src/back-end/unpinned_requirements
+	for dir in src/back-end src/front-end; do \
+		rm -f $$dir/pinned_requirements.txt && \
+		cat $$dir/unpinned_requirements.txt | \
+		xargs pip show | \
+		awk '/^Name:/ {name=$$2} /^Version:/ {print name "==" $$2}' | \
+		sort | uniq > $$dir/pinned_requirements.txt; \
+	done
+
 .PHONY: clean
 clean: ## Clean python cache
 	find . -type d -name "__pycache__" -exec rm -rf {} \;

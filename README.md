@@ -44,9 +44,12 @@ pip install -r requirements.txt
 
 ### 📌 To pin the unpinned requirements, you'll need to add a new requirement to either the unpinned_requirements.txt file in the front-end or back-end directories. Once you've added the new requirement, you can run the command to generate a pinned_requirements.txt file with the exact version numbers of each package
 ```
-for dir in src/back-end src/front-end; do
-    rm -f $dir/pinned_requirements.txt && cat $dir/unpinned_requirements.txt | xargs pip show | awk '/^Name:/ {name=$2} /^Version:/ {print name "==" $2}' | sort | uniq > $dir/pinned_requirements.txt
-done
+## Linux
+make pin-requirements-txt
+
+
+## Windows
+cmd.exe /C pin_requirements.bat
 ```
 
 
