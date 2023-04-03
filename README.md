@@ -18,7 +18,6 @@ PS: Architecture: Semi-Modular/Organized Monolithic
 
 
 ## :notebook_with_decorative_cover: Notes
-- Did not utilize any Prompt Engineering technique :sleeping:
 - Probs had to find a way to separate the requirements for each service as each image is built out of all the requirements :sleeping:
 
 

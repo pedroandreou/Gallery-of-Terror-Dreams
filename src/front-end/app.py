@@ -13,9 +13,9 @@ from PIL import Image
 
 current_path = Path(__file__).resolve().parent
 
-base_nltk_path = Path("/data") if os.environ.get("DOCKER_CONTAINER") else current_path
-
-nltk_data_path = os.path.join(base_nltk_path, "nltk_data")
+nltk_data_path = (
+    Path("/data/nltk_data") if os.environ.get("DOCKER_CONTAINER") else current_path
+)
 os.makedirs(nltk_data_path, exist_ok=True)
 nltk.data.path.append(nltk_data_path)
 
