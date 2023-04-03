@@ -13,21 +13,21 @@ from PIL import Image
 
 current_path = Path(__file__).resolve().parent
 
-base_nltk_path = Path("/data") if os.environ.get("DOCKER_CONTAINER") else current_path
-
-nltk_data_path = os.path.join(base_nltk_path, "nltk_data")
+nltk_data_path = (
+    Path("/data/nltk_data") if os.environ.get("DOCKER_CONTAINER") else current_path
+)
 os.makedirs(nltk_data_path, exist_ok=True)
 nltk.data.path.append(nltk_data_path)
 
 try:
     nltk.data.find("tokenizers/punkt")
 except (LookupError, OSError):
-    nltk.download("punkt")
+    nltk.download("punkt", download_dir=nltk_data_path)
 
 try:
     nltk.data.find("corpora/stopwords")
 except (LookupError, OSError):
-    nltk.download("stopwords")
+    nltk.download("stopwords", download_dir=nltk_data_path)
 
 
 # Change the webpage name and icon
@@ -276,8 +276,10 @@ if st.session_state["submit_pressed"]:
 # Display the video output if available
 if st.session_state["video_output"]:
     if isinstance(st.session_state["video_output"], str):
-        st.error("An error occurred: " + str(st.session_state["video_output"]))
+        # Print the error
+        st.error(str(st.session_state["video_output"]))
     else:
+        # Show the video
         st.video(st.session_state["video_output"])
         st.success("Request completed")
 
