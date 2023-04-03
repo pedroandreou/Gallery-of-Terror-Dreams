@@ -1,10 +1,7 @@
 pre-commit
-streamlit
-streamlit_player
 openai
 fastapi
 pydantic
 python-dotenv
 uvicorn
 moviepy
-nltk

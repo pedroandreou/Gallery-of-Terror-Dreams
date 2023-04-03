@@ -17,10 +17,6 @@ PS: Architecture: Semi-Modular/Organized Monolithic
 [Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
 
 
-## :notebook_with_decorative_cover: Notes
-- Probs had to find a way to separate the requirements for each service as each image is built out of all the requirements :sleeping:
-
-
 ## :building_construction: Environment
 
 ### :house: You should create a virtualenv
@@ -46,9 +42,11 @@ pip install -r requirements.txt
 ```
 
 
-### 📌 How to pin the unpinned requirements
+### 📌 To pin the unpinned requirements, you'll need to add a new requirement to either the unpinned_requirements.txt file in the front-end or back-end directories. Once you've added the new requirement, you can run the command to generate a pinned_requirements.txt file with the exact version numbers of each package
 ```
-while read p; do pip show $p | grep -E "^Version: " | awk '{print $2}' | xargs -I % echo $p==%; done < unpinned_requirements.txt > pinned_requirements.txt
+for dir in src/back-end src/front-end; do
+    rm -f $dir/pinned_requirements.txt && cat $dir/unpinned_requirements.txt | xargs pip show | awk '/^Name:/ {name=$2} /^Version:/ {print name "==" $2}' | sort | uniq > $dir/pinned_requirements.txt
+done
 ```
 
 

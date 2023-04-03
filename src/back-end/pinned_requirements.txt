@@ -1,0 +1,7 @@
+fastapi==0.95.0
+moviepy==1.0.3
+openai==0.27.2
+pre-commit==3.2.1
+pydantic==1.10.7
+python-dotenv==1.0.0
+uvicorn==0.21.1

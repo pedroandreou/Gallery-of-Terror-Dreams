@@ -17,8 +17,10 @@ set PYTHON=%VENV%\Scripts\python.exe
 :: Upgrade pip to the specified version
 %VENV%\Scripts\pip install --upgrade pip==22.2.2
 
-:: Install packages from the unpinned_requirements.txt file
-%VENV%\Scripts\pip install -r pinned_requirements.txt
+:: Install packages from the pinned_requirements.txt files from both front-end and back-end dirs
+for /d %%i in (src\back-end src\front-end) do type "%%i\pinned_requirements.txt" >> pinned_requirements_temp.txt
+%VENV%\Scripts\pip install -r pinned_requirements_temp.txt
+del pinned_requirements_temp.txt
 
 :: Add a comment line to the requirements.txt file
 echo # Created automatically by make update-requirements-txt. Do not update manually! > requirements.txt
