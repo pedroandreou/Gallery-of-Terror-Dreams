@@ -5,10 +5,10 @@ from functools import wraps
 from pathlib import Path
 
 import openai
+from chatgpt.chatgpt import generate_bullet_points_using_chatgpt
 from dalle2.dalle2 import generate_imgs_using_dalle2
 from fastapi import Body, FastAPI
 from fastapi.responses import JSONResponse, Response
-from gpt3.gpt3 import generate_bullet_points_using_gpt3
 from pydantic import BaseModel
 from video_generation.images_to_video import Video
 
@@ -70,7 +70,7 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     Path(IMAGE_DIR).mkdir(parents=True)
 
     # Generate bullet points
-    bullet_dict = generate_bullet_points_using_gpt3(
+    bullet_dict = generate_bullet_points_using_chatgpt(
         payload.input_text, payload.openai_key
     )
 
