@@ -3,7 +3,7 @@ from typing import List
 import openai
 
 
-def generate_bullet_points_using_gpt3(text: str, openai_key: str):
+def generate_bullet_points_using_chatgpt(text: str, openai_key: str):
     def generate_output_dictionary(text: str) -> List[str]:
         # Remove leading whitespaces
         lines = [line.lstrip() for line in text.splitlines()]
