@@ -23,6 +23,7 @@ docker-compose.yml
 .isort.cfg
 
 # Ignore files for creating virtual envs
-unpinned_requirements.txt
+src/front-end/unpinned_requirements.txt
+src/back-end/unpinned_requirements.txt
 Makefile
-update_requirements.bat
+update_and_pin_requirements.bat

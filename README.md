@@ -17,10 +17,6 @@ PS: Architecture: Semi-Modular/Organized Monolithic
 [Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
 
 
-## :notebook_with_decorative_cover: Notes
-- Probs had to find a way to separate the requirements for each service as each image is built out of all the requirements :sleeping:
-
-
 ## :building_construction: Environment
 
 ### :house: You should create a virtualenv
@@ -46,20 +42,14 @@ pip install -r requirements.txt
 ```
 
 
-### 📌 How to pin the unpinned requirements
-```
-while read p; do pip show $p | grep -E "^Version: " | awk '{print $2}' | xargs -I % echo $p==%; done < unpinned_requirements.txt > pinned_requirements.txt
-```
-
-
-### :house_with_garden: How to update the requirements
+### :house_with_garden: Update & Pin the requirements. You'll need to add a new requirement to either the unpinned_requirements.txt file in the front-end or back-end directories. Once you've added the new requirement, you can run the command to update and pin the requirements automatically
 ```
 ## Linux
-make update-requirements-txt
+make update-and-pin-requirements-txt
 
 
 ## Windows
-cmd.exe /C update_requirements.bat
+cmd.exe /C update_and_pin_requirements.bat
 ```
 
 
