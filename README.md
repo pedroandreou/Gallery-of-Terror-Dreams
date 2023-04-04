@@ -42,18 +42,7 @@ pip install -r requirements.txt
 ```
 
 
-### 📌 To pin the unpinned requirements, you'll need to add a new requirement to either the unpinned_requirements.txt file in the front-end or back-end directories. Once you've added the new requirement, you can run the command to generate a pinned_requirements.txt file with the exact version numbers of each package
-```
-## Linux
-make pin-requirements-txt
-
-
-## Windows
-cmd.exe /C pin_requirements.bat
-```
-
-
-### :house_with_garden: How to update the requirements
+### :house_with_garden: Update the requirements. You'll need to add a new requirement to either the unpinned_requirements.txt file in the front-end or back-end directories. Once you've added the new requirement, you can run the command to update the requirements
 ```
 ## Linux
 make update-requirements-txt
@@ -61,6 +50,17 @@ make update-requirements-txt
 
 ## Windows
 cmd.exe /C update_requirements.bat
+```
+
+
+### 📌 Pin the unpinned requirements. Once you've added a new requirement and updated the requirements above, you can run the command to generate a pinned_requirements.txt file with the exact version numbers of each package
+```
+## Linux
+make pin-requirements-txt
+
+
+## Windows
+cmd.exe /C pin_requirements.bat
 ```
 
 
