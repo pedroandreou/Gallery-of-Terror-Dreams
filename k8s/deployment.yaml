@@ -27,7 +27,7 @@ spec:
       volumes:
       - name: front-end-volume
         persistentVolumeClaim:
-          claimName: frotn-end-pvc
+          claimName: front-end-pvc
 
 ---
 apiVersion: apps/v1
@@ -58,4 +58,4 @@ spec:
       volumes:
       - name: back-end-volume
         persistentVolumeClaim:
-          path: back-end-pvc
+          claimName: back-end-pvc
