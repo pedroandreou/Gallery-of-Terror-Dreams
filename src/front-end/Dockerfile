@@ -7,10 +7,10 @@ FROM python:3.8 AS build
 ARG requirements
 
 # Copy pinned_requirements.txt file to the container
-COPY ${requirements} /code/pinned_requirements.txt
+COPY ${requirements} /app/pinned_requirements.txt
 
 # Install required packages from pinned_requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/pinned_requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/pinned_requirements.txt
 
 #################
 # RUNTIME IMAGE #

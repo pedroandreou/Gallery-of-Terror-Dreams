@@ -28,7 +28,7 @@ services:
       args:
         - requirements=./src/back-end/pinned_requirements.txt
     volumes:
-      - ./src/back-end:/app/src/back-end  # Mounted as writable by default
+      - ./src/back-end:/app  # Mounted as writable by default
     ports:
       - "8000:8000"
     restart: unless-stopped
