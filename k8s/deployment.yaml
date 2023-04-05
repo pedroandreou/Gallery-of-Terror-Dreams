@@ -26,8 +26,8 @@ spec:
           readOnly: true
       volumes:
       - name: front-end-volume
-        hostPath:
-          path: ./src/front-end
+        persistentVolumeClaim:
+          claimName: frotn-end-pvc
 
 ---
 apiVersion: apps/v1
@@ -54,8 +54,8 @@ spec:
           value: "True"
         volumeMounts:
         - name: back-end-volume
-          mountPath: /app/src/back-end
+          mountPath: /app
       volumes:
       - name: back-end-volume
-        hostPath:
-          path: ./src/back-end
+        persistentVolumeClaim:
+          path: back-end-pvc
