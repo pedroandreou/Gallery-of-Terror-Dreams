@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-end-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-end
+  template:
+    metadata:
+      labels:
+        app: front-end
+    spec:
+      containers:
+      - name: front-end-container
+        image: thedockerman99/gallery-of-terror-dreams:front-end
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DOCKER_CONTAINER
+          value: "True"
+        volumeMounts:
+        - name: front-end-volume
+          mountPath: /app
+          readOnly: true
+      volumes:
+      - name: front-end-volume
+        hostPath:
+          path: ./src/front-end
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back-end-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-end
+  template:
+    metadata:
+      labels:
+        app: back-end
+    spec:
+      containers:
+      - name: back-end-container
+        image: thedockerman99/gallery-of-terror-dreams:back-end
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DOCKER_CONTAINER
+          value: "True"
+        volumeMounts:
+        - name: back-end-volume
+          mountPath: /app/src/back-end
+      volumes:
+      - name: back-end-volume
+        hostPath:
+          path: ./src/back-end
