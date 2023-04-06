@@ -9,8 +9,6 @@ services:
       dockerfile: ./src/front-end/Dockerfile
       args:
         - requirements=./src/front-end/pinned_requirements.txt
-    volumes:
-      - ./src/front-end:/app:ro
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -27,8 +25,6 @@ services:
       dockerfile: ./src/back-end/Dockerfile
       args:
         - requirements=./src/back-end/pinned_requirements.txt
-    volumes:
-      - ./src/back-end:/app  # Mounted as writable by default
     ports:
       - "8000:8000"
     restart: unless-stopped

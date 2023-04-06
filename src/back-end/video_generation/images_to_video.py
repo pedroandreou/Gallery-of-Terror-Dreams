@@ -7,10 +7,10 @@ from PIL import Image
 
 
 class Video:
-    def __init__(self, size, video_id):
+    def __init__(self, size, video_id, png_dir):
         self.size = size
         self.current_path = Path(__file__).parent.absolute()
-        self.image_dir = self.current_path.parent / "dalle2" / "png_images"
+        self.image_dir = png_dir
         self.audio_file = self.current_path / "audio" / "texas_trailer.mp3"
         self.flash_video_file = self.current_path / "videos" / "flash_video.mp4"
         self.final_video_file = Path(self.current_path, "videos", f"{video_id}.mp4")

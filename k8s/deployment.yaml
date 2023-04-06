@@ -18,16 +18,8 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: DOCKER_CONTAINER
+        - name: KUBERNETES_CLUSTER
           value: "True"
-        volumeMounts:
-        - name: front-end-volume
-          mountPath: /app
-          readOnly: true
-      volumes:
-      - name: front-end-volume
-        persistentVolumeClaim:
-          claimName: front-end-pvc
 
 ---
 apiVersion: apps/v1
@@ -50,12 +42,5 @@ spec:
         ports:
         - containerPort: 8000
         env:
-        - name: DOCKER_CONTAINER
+        - name: KUBERNETES_CLUSTER
           value: "True"
-        volumeMounts:
-        - name: back-end-volume
-          mountPath: /app
-      volumes:
-      - name: back-end-volume
-        persistentVolumeClaim:
-          claimName: back-end-pvc

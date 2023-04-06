@@ -40,7 +40,6 @@ USER nonroot
 
 # Set PYTHONPATH environment variable to include the front-end source code
 ENV PYTHONPATH "${PYTHONPATH}:/app"
-ENV DOCKER_CONTAINER 1
 
 # Expose port 8080 for Streamlit
 EXPOSE 8080
