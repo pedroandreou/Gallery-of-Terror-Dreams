@@ -10,9 +10,7 @@ Dare to enter the gallery of Terror Dreams, where your text takes on a sinister 
 
 ![Screenshot](https://github.com/pedroandreou/Gallery-of-Terror-Dreams/blob/master/demo/demo.gif)
 
-<blockquote>
-PS: Architecture: Semi-Modular/Organized Monolithic
-</blockquote>
+<br>
 
 [Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
 
@@ -86,11 +84,26 @@ docker swarm leave --force
 
 #### Handy commands:
 ```
-## PUSH THE GENERATED IMGS TO THE REGISTRY
-docker-compose push
+## REBUILD
+docker-compose build --pull && docker-compose push
 
 ## FIND THE CUSTOM NNETWORKS THAT YOU HAVE CREATED
 docker network ls --filter type=custom
+```
+
+## ⛴️ Add Kubernetes
+```
+### LOCALLY
+
+## RESET
+minikube stop && minikube start
+
+## ADD YOUR INGRESS IP TO YOUR /etc/hosts/
+sudo nano /etc/hosts
+
+## DELETE ALL CONFIGS
+cd ./k8s/
+kubectl delete all --all
 ```
 
 

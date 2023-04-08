@@ -12,9 +12,10 @@ from nltk.tokenize import word_tokenize
 from PIL import Image
 
 current_path = Path(__file__).resolve().parent
+is_container_orchestrator = os.environ.get("CONTAINER_ORCHESTRATOR") == "True"
 
 nltk_data_path = (
-    Path("/data/nltk_data") if os.environ.get("DOCKER_CONTAINER") else current_path
+    Path("/data/nltk_data") if is_container_orchestrator else current_path / "nltk_data"
 )
 os.makedirs(nltk_data_path, exist_ok=True)
 nltk.data.path.append(nltk_data_path)
@@ -133,9 +134,10 @@ def handle_submit(text):
             # Generate the video
             base_url = (
                 "http://back-end:8000"
-                if os.environ.get("DOCKER_CONTAINER")
+                if is_container_orchestrator
                 else "http://localhost:8000"
             )
+
             api_url = f"{base_url}/create-creepy-story"
             headers = {"Content-Type": "application/json"}
 

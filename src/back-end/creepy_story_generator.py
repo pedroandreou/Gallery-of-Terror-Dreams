@@ -23,8 +23,8 @@ class InputPayload(BaseModel):
 app = FastAPI()
 
 
-current_path = Path(__file__).resolve().parent
-IMAGE_DIR = current_path / "dalle2" / "png_images"
+CURR_PATH = Path(__file__).resolve().parent
+IMAGE_DIR = CURR_PATH / "dalle2" / "png_images"
 
 
 def handle_openai_exceptions(func):
@@ -85,7 +85,7 @@ def create_creepy_story(payload: InputPayload = Body(None)):
     video_id = "final_video"
 
     # Generate output video
-    video = Video((1024, 768), video_id)
+    video = Video((1024, 768), video_id, IMAGE_DIR)
     video.shape_changer()
     video.video_creator()
 
@@ -105,8 +105,8 @@ def serve_video(video_id: str):
     # Set the video file path based on whether the code is running in a Docker container or locally
     base_path = (
         Path("/app")
-        if os.environ.get("DOCKER_CONTAINER")
-        else os.path.dirname(__file__)
+        if os.environ.get("CONTAINER_ORCHESTRATOR") == "True"
+        else CURR_PATH
     )
     video_file_path = os.path.join(
         base_path, "video_generation", "videos", f"{video_id}.mp4"
