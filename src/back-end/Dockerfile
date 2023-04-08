@@ -38,6 +38,9 @@ USER nonroot
 # Set PYTHONPATH environment variable to include the back-end source code
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
+# Set environment variable to be used in the application code for checking if Docker is running
+ENV CONTAINER_ORCHESTRATOR="True"
+
 # Expose port 8000 for Uvicorn
 EXPOSE 8000
 

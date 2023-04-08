@@ -105,8 +105,7 @@ def serve_video(video_id: str):
     # Set the video file path based on whether the code is running in a Docker container or locally
     base_path = (
         Path("/app")
-        if os.environ.get("KUBERNETES_CLUSTER") == "True"
-        or os.environ.get("DOCKER_CONTAINER")
+        if os.environ.get("CONTAINER_ORCHESTRATOR") == "True"
         else CURR_PATH
     )
     video_file_path = os.path.join(

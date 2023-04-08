@@ -100,6 +100,9 @@ minikube stop && minikube start
 
 ## ADD YOUR INGRESS IP TO YOUR /etc/hosts/
 sudo nano /etc/hosts
+
+## DELETE
+kubectl delete all --all
 ```
 
 

@@ -15,7 +15,7 @@ services:
     networks:
       - ${NETWORK_NAME:-stackdemo_local-network}
     environment:
-      - DOCKER_CONTAINER=True
+      - CONTAINER_ORCHESTRATOR="True"
 
   back-end:
     container_name: back-end
@@ -31,7 +31,7 @@ services:
     networks:
       - ${NETWORK_NAME:-stackdemo_local-network}
     environment:
-      - DOCKER_CONTAINER=True
+      - CONTAINER_ORCHESTRATOR="True"
 
 networks:
   stackdemo_local-network:

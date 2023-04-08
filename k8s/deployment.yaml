@@ -18,7 +18,7 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: KUBERNETES_CLUSTER
+        - name: CONTAINER_ORCHESTRATOR
           value: "True"
 
 ---
@@ -42,5 +42,5 @@ spec:
         ports:
         - containerPort: 8000
         env:
-        - name: KUBERNETES_CLUSTER
+        - name: CONTAINER_ORCHESTRATOR
           value: "True"
