@@ -101,7 +101,8 @@ minikube stop && minikube start
 ## ADD YOUR INGRESS IP TO YOUR /etc/hosts/
 sudo nano /etc/hosts
 
-## DELETE
+## DELETE ALL CONFIGS
+cd ./k8s/
 kubectl delete all --all
 ```
 
