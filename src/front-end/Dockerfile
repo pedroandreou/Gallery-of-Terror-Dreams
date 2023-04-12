@@ -33,7 +33,7 @@ RUN groupadd -r nonroot && useradd -r -g nonroot nonroot
 RUN chown -R nonroot:nonroot /app
 
 # Create a directory for NLTK data and set permissions
-RUN mkdir -p /app/data/nltk_data && chown -R nonroot:nonroot /app/data/nltk_data && chmod -R 777 /app/data/nltk_data
+RUN mkdir -p /app/nltk_data && chown -R nonroot:nonroot /app/nltk_data && chmod -R 777 /app/nltk_data
 
 # Switch to the non-root user
 USER nonroot
