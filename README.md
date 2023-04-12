@@ -91,7 +91,7 @@ docker-compose build --pull && docker-compose push
 docker network ls --filter type=custom
 ```
 
-## ⛴️ Add Kubernetes
+## ⛴️ Kubernetes
 ```
 ### LOCALLY
 
