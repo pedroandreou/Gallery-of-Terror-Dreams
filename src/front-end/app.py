@@ -14,9 +14,10 @@ from PIL import Image
 current_path = Path(__file__).resolve().parent
 is_container_orchestrator = os.environ.get("CONTAINER_ORCHESTRATOR") == "True"
 
-nltk_data_path = (
-    Path("/data/nltk_data") if is_container_orchestrator else current_path / "nltk_data"
-)
+if is_container_orchestrator:
+    nltk_data_path = "/app/nltk_data"
+else:
+    nltk_data_path = current_path / "nltk_data"
 os.makedirs(nltk_data_path, exist_ok=True)
 nltk.data.path.append(nltk_data_path)
 
@@ -91,8 +92,8 @@ def handle_submit(text):
         # Remove punctuation
         text = text.translate(str.maketrans("", "", string.punctuation))
 
-        # Split input string into tokens
-        tokens = text.split()
+        # Remove non-English characters
+        text = re.sub(r"[^ -~]+", "", text)
 
         # Tokenize the text
         tokens = word_tokenize(text)
@@ -101,13 +102,10 @@ def handle_submit(text):
         stop_words = set(stopwords.words("english"))
         tokens = [token for token in tokens if not token in stop_words]
 
-        # Define a regular expression pattern to match special characters
-        pattern = r"[^A-Za-z]+"
+        preprocessed_text = " ".join(tokens)
 
-        # Remove special characters from each token
-        clean_tokens = [re.sub(pattern, "", token) for token in tokens]
-
-        preprocessed_text = " ".join(clean_tokens)
+        # Replace more than two whitespaces by only one
+        preprocessed_text = re.sub(r"[^\S\n]{2,}", " ", preprocessed_text)
 
         return preprocessed_text
 

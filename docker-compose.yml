@@ -12,10 +12,13 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+    # volumes: ## for faster development
+    #   - ./src/front-end:/app
     networks:
       - ${NETWORK_NAME:-stackdemo_local-network}
     environment:
       - CONTAINER_ORCHESTRATOR="True"
+    # command: streamlit run app.py --server.port 8080 --theme.base="dark" --browser.gatherUsageStats=false --logger.level="error"
 
   back-end:
     container_name: back-end
@@ -28,10 +31,13 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
+    # volumes: ## for faster development
+    #   - ./src/back-end:/app
     networks:
       - ${NETWORK_NAME:-stackdemo_local-network}
     environment:
       - CONTAINER_ORCHESTRATOR="True"
+    # command: uvicorn creepy_story_generator:app --host 0.0.0.0 --port 8000 --reload
 
 networks:
   stackdemo_local-network:

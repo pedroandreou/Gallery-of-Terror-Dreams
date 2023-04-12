@@ -91,7 +91,7 @@ docker-compose build --pull && docker-compose push
 docker network ls --filter type=custom
 ```
 
-## ⛴️ Add Kubernetes
+## ⛴️ Kubernetes
 ```
 ### LOCALLY
 
@@ -104,6 +104,10 @@ sudo nano /etc/hosts
 ## DELETE ALL CONFIGS
 cd ./k8s/
 kubectl delete all --all
+
+## UPDATE DEPLOYMENTS
+kubectl rollout restart deployment/front-end-deployment
+kubectl rollout restart deployment/back-end-deployment
 ```
 
 

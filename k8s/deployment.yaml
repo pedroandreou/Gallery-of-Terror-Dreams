@@ -15,6 +15,7 @@ spec:
       containers:
       - name: front-end-container
         image: thedockerman99/gallery-of-terror-dreams:front-end
+        imagePullPolicy: "Always"
         ports:
         - containerPort: 8080
         env:
@@ -39,6 +40,7 @@ spec:
       containers:
       - name: back-end-container
         image: thedockerman99/gallery-of-terror-dreams:back-end
+        imagePullPolicy: "Always"
         ports:
         - containerPort: 8000
         env:
