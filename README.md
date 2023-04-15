@@ -13,6 +13,7 @@ Dare to enter the gallery of Terror Dreams, where your text takes on a sinister 
 <br>
 
 [Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
+> **Note:** It seems to me that the GPT-3 API was producing more contextually relevant sentences, which consequently led to the generation of images that were more accurate to the given context. Nevertheless, I have opted for the ChatGPT API, as it offers a significant cost reduction, with a 10x decrease in expenses.
 
 
 ## :building_construction: Environment
@@ -97,22 +98,24 @@ docker network ls --filter type=custom
 ## RESET
 minikube stop && minikube start
 
-## ADD YOUR INGRESS IP TO YOUR /etc/hosts/ to make it accessible
+## ADD YOUR INGRESS IP TO YOUR /etc/hosts/ to make your domain accessible locally
 minikube ip
 sudo nano /etc/hosts (add <minikube_ip> <domain_name>)
 
 ## INSTALL INGRESS-NGINX
 minikube addons enable ingress
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml
+#OR#
+helm install my-release ingress-nginx/ingress-nginx
 
 ## INSTALL CERT-MANAGER CERTIFICATE AND RENAME IT
 kubectl create namespace cert-manager
+kubectl -n cert-manager apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.crds.yaml
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.1
 
-## EXPORT YOUR EMAIL AS A SECRET KEY, CREATE ISSUER FROM TEMPLATE AND CONFIGURE ISSUER
+## EXPORT YOUR EMAIL AS A SECRET KEY, CREATE ISSUER FROM TEMPLATE
 cd ./k8s/certmanager/
 export EMAIL=<your-email>
 envsubst < issuer.template.yaml > issuer.yaml
@@ -120,7 +123,7 @@ envsubst < issuer.template.yaml > issuer.yaml
 ## INSTALL ALL CONFIGS
 cd ./k8s/infra/ && kubectl apply -f . && cd ../certmanager/ && kubectl apply -f certificate.yaml && kubectl apply -f issuer.yaml
 
-## CHECK STATUS
+## CHECK STATUS AND MONITOR LOGS
 kubectl describe clusterissuer letsencrypt-cluster-issuer
 kubectl describe certificate gallery-of-terror-dreams-tls -n default
 kubectl describe order -n default
@@ -136,6 +139,8 @@ kubectl delete certificate --all -n default
 kubectl delete certificaterequest --all -n default
 kubectl delete order --all -n default
 ```
+
+> **Note:** Let's Encrypt is unable to issue certificates for localhost. If you plan to run the app on a local Kubernetes cluster, consider using self-signed certificates. Read this [article](https://letsencrypt.org/docs/certificates-for-localhost/).
 
 
 ## 🛠 Initialization & Setup
