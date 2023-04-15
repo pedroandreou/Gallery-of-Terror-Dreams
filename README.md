@@ -103,6 +103,7 @@ minikube ip
 sudo nano /etc/hosts (add <minikube_ip> <domain_name>)
 
 ## INSTALL INGRESS-NGINX
+minikube addons enable ingress
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml
 
 ## INSTALL CERT-MANAGER CERTIFICATE AND RENAME IT
@@ -120,11 +121,10 @@ envsubst < issuer.template.yaml > issuer.yaml
 ## INSTALL ALL CONFIGS
 cd ./k8s/infra/ && kubectl apply -f . && cd ../certmanager/ && kubectl apply -f certificate.yaml && kubectl apply -f issuer.yaml
 
-## CHECK CERTIFICATE STATUS
+## CHECK STATUS
 kubectl describe clusterissuer letsencrypt-cluster-issuer
 kubectl describe certificate gallery-of-terror-dreams-tls -n default
 kubectl describe order -n default
-
 kubectl describe ingress gallery-of-terror-dreams-ingress -n default
 kubectl logs -n cert-manager -l app=cert-manager
 
