@@ -69,8 +69,7 @@ docker-compose logs -f --tail=100 --no-color
 docker-compose down --volumes
 
 
-
-## RUN IT ON A GROUP OF DOCKER HOSTS THAT ARE JOINED TOGETHER INTO A SINGLE VIRTUAL HOST (SWARM CLUSTER)
+## RUN IT ON DOCKER SWARM CLUSTER
 docker swarm init
 docker service create --name registry --publish published=5000,target=5000 registry:2
 export NETWORK_NAME=stackdemo_deployment-network
@@ -87,7 +86,7 @@ docker swarm leave --force
 ## REBUILD
 docker-compose build --pull && docker-compose push
 
-## FIND THE CUSTOM NNETWORKS THAT YOU HAVE CREATED
+## FIND THE CUSTOM NETWORKS THAT YOU HAVE CREATED
 docker network ls --filter type=custom
 ```
 

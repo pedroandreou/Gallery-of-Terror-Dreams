@@ -6,7 +6,6 @@ metadata:
 spec:
   dnsNames:
     - gallery-of-terror-dreams.com
-    - www.gallery-of-terror-dreams.com
   secretName: gallery-of-terror-dreams-tls
   issuerRef:
     name: letsencrypt-cluster-issuer
