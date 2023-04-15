@@ -98,16 +98,44 @@ docker network ls --filter type=custom
 ## RESET
 minikube stop && minikube start
 
-## ADD YOUR INGRESS IP TO YOUR /etc/hosts/
-sudo nano /etc/hosts
+## ADD YOUR INGRESS IP TO YOUR /etc/hosts/ to make it accessible
+minikube ip
+sudo nano /etc/hosts (add <minikube_ip> <domain_name>)
+
+## INSTALL INGRESS-NGINX
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml
+
+## INSTALL CERT-MANAGER CERTIFICATE AND RENAME IT
+kubectl create namespace cert-manager
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.crds.yaml
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.1
+
+## EXPORT YOUR EMAIL AS A SECRET KEY, CREATE ISSUER FROM TEMPLATE AND CONFIGURE ISSUER
+cd ./k8s/certmanager/
+export EMAIL=<your-email>
+envsubst < issuer.template.yaml > issuer.yaml
+
+## INSTALL ALL CONFIGS
+cd ./k8s/infra/ && kubectl apply -f . && cd ../certmanager/ && kubectl apply -f certificate.yaml && kubectl apply -f issuer.yaml
+
+## CHECK CERTIFICATE STATUS
+kubectl describe clusterissuer letsencrypt-cluster-issuer
+kubectl describe certificate gallery-of-terror-dreams-tls -n default
+kubectl describe order -n default
+
+kubectl describe ingress gallery-of-terror-dreams-ingress -n default
+kubectl logs -n cert-manager -l app=cert-manager
 
 ## DELETE ALL CONFIGS
-cd ./k8s/
+cd ./k8s/infra/ && kubectl delete -f . && cd ../certmanager/ && kubectl delete -f certificate.yaml && kubectl delete -f issuer.yaml
 kubectl delete all --all
 
-## UPDATE DEPLOYMENTS
-kubectl rollout restart deployment/front-end-deployment
-kubectl rollout restart deployment/back-end-deployment
+## DELETE ALL CERTIFICATES
+kubectl delete certificate --all -n default
+kubectl delete certificaterequest --all -n default
+kubectl delete order --all -n default
 ```
 
 

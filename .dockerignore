@@ -27,3 +27,6 @@ src/front-end/unpinned_requirements.txt
 src/back-end/unpinned_requirements.txt
 Makefile
 update_and_pin_requirements.bat
+
+# k8s issuer
+**/issuer.yaml

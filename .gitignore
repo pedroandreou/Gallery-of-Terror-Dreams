@@ -19,3 +19,6 @@
 
 # Conf file for sorting imports
 .isort.cfg
+
+# k8s issuer
+**/issuer.yaml

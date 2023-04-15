@@ -1,19 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app: gallery-of-terror-dreams-front-end
   name: front-end-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: front-end
+      app: gallery-of-terror-dreams-front-end
   template:
     metadata:
       labels:
-        app: front-end
+        app: gallery-of-terror-dreams-front-end
     spec:
       containers:
-      - name: front-end-container
+      - name: gallery-of-terror-dreams-front-end
         image: thedockerman99/gallery-of-terror-dreams:front-end
         imagePullPolicy: "Always"
         ports:
@@ -26,19 +28,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app: gallery-of-terror-dreams-back-end
   name: back-end-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: back-end
+      app: gallery-of-terror-dreams-back-end
   template:
     metadata:
       labels:
-        app: back-end
+        app: gallery-of-terror-dreams-back-end
     spec:
       containers:
-      - name: back-end-container
+      - name: gallery-of-terror-dreams-back-end
         image: thedockerman99/gallery-of-terror-dreams:back-end
         imagePullPolicy: "Always"
         ports:
