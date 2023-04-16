@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-cluster-issuer"
+  name: gallery-of-terror-dreams-ingress
+spec:
+  tls:
+    - hosts:
+        - gallery-of-terror-dreams.com
+      secretName: gallery-of-terror-dreams-tls
+  rules:
+    - host: gallery-of-terror-dreams.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: front-end
+                port:
+                  number: 8080

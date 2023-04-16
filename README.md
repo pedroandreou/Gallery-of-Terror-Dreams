@@ -8,11 +8,14 @@ Terror Dreams takes artistic liberties to craft a cinematic horror experience th
 
 Dare to enter the gallery of Terror Dreams, where your text takes on a sinister new life 🌑 and the line between reality and nightmare blurs 😨. Are you brave enough to embrace the darkness within? 🖤
 
-![Screenshot](https://github.com/pedroandreou/Gallery-of-Terror-Dreams/blob/master/demo/demo.gif)
+![Screenshot](https://github.com/pedroandreou/Gallery-of-Terror-Dreams/blob/master/demos/chatpgt_demo.gif)
 
 <br>
 
 [Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
+> :memo: **Note:** The GPT-3 API seemed to produce more contextually relevant sentences, leading to the creation of images that better matched the given context. However, I chose to use the ChatGPT API because it provides a significant cost reduction, offering a 10x decrease in expenses.
+>
+> :memo: **Note:** If you encounter the error message "Your request was rejected due to our safety system. Your prompt may include text that is not permitted by our safety system", resubmitting your request will often resolve the issue, allowing it to function as intended.
 
 
 ## :building_construction: Environment
@@ -69,8 +72,7 @@ docker-compose logs -f --tail=100 --no-color
 docker-compose down --volumes
 
 
-
-## RUN IT ON A GROUP OF DOCKER HOSTS THAT ARE JOINED TOGETHER INTO A SINGLE VIRTUAL HOST (SWARM CLUSTER)
+## RUN IT ON DOCKER SWARM CLUSTER
 docker swarm init
 docker service create --name registry --publish published=5000,target=5000 registry:2
 export NETWORK_NAME=stackdemo_deployment-network
@@ -87,7 +89,7 @@ docker swarm leave --force
 ## REBUILD
 docker-compose build --pull && docker-compose push
 
-## FIND THE CUSTOM NNETWORKS THAT YOU HAVE CREATED
+## FIND THE CUSTOM NETWORKS THAT YOU HAVE CREATED
 docker network ls --filter type=custom
 ```
 
@@ -98,17 +100,52 @@ docker network ls --filter type=custom
 ## RESET
 minikube stop && minikube start
 
-## ADD YOUR INGRESS IP TO YOUR /etc/hosts/
-sudo nano /etc/hosts
+## ADD YOUR INGRESS IP TO YOUR /etc/hosts/ to make your domain accessible locally
+minikube ip
+sudo nano /etc/hosts (add <minikube_ip> gallery-of-terror-dreams.com)
+
+## EXPORT YOUR EMAIL AS A SECRET KEY, CREATE ISSUER FROM TEMPLATE
+cd ./k8s/certmanager/
+export EMAIL=<your-email>
+envsubst < issuer.template.yaml > issuer.yaml
+
+## INSTALL ALL CONFIGS
+cd ./k8s/infra/ && kubectl apply -f . && cd ../certmanager/ && kubectl apply -f certificate.yaml && kubectl apply -f issuer.yaml
 
 ## DELETE ALL CONFIGS
-cd ./k8s/
+cd ./k8s/infra/ && kubectl delete -f . && cd ../certmanager/ && kubectl delete -f certificate.yaml && kubectl delete -f issuer.yaml
 kubectl delete all --all
 
-## UPDATE DEPLOYMENTS
-kubectl rollout restart deployment/front-end-deployment
-kubectl rollout restart deployment/back-end-deployment
+
+### DEPLOYMENT
+
+## INSTALL INGRESS-NGINX
+minikube addons enable ingress
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml
+#OR#
+helm install my-release ingress-nginx/ingress-nginx
+
+## INSTALL CERT-MANAGER CERTIFICATE AND RENAME IT
+kubectl create namespace cert-manager
+kubectl -n cert-manager apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.crds.yaml
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+
+## CHECK STATUS
+kubectl describe clusterissuer letsencrypt-cluster-issuer
+kubectl describe certificate gallery-of-terror-dreams-tls -n default
+kubectl describe ingress gallery-of-terror-dreams-ingress -n default
+
+## MONITOR LOGS
+kubectl logs -n cert-manager -l app=cert-manager
+
+## DELETE ALL CERTIFICATES
+kubectl delete certificate --all -n default
+kubectl delete certificaterequest --all -n default
 ```
+
+> :memo: **Note:** Let's Encrypt is unable to issue certificates for localhost. If you plan to run the app on a local Kubernetes cluster, consider using self-signed certificates. Read more about it, [here](https://letsencrypt.org/docs/certificates-for-localhost/).
 
 
 ## 🛠 Initialization & Setup

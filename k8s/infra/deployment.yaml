@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gallery-of-terror-dreams-front-end
+  name: front-end-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gallery-of-terror-dreams-front-end
+  template:
+    metadata:
+      labels:
+        app: gallery-of-terror-dreams-front-end
+    spec:
+      containers:
+      - name: gallery-of-terror-dreams-front-end
+        image: thedockerman99/gallery-of-terror-dreams:front-end
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CONTAINER_ORCHESTRATOR
+          value: "True"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gallery-of-terror-dreams-back-end
+  name: back-end-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gallery-of-terror-dreams-back-end
+  template:
+    metadata:
+      labels:
+        app: gallery-of-terror-dreams-back-end
+    spec:
+      containers:
+      - name: gallery-of-terror-dreams-back-end
+        image: thedockerman99/gallery-of-terror-dreams:back-end
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8000
+        env:
+        - name: CONTAINER_ORCHESTRATOR
+          value: "True"

@@ -1,11 +1,17 @@
-name: Run tests
-on: [push]
+name: Combined Workflow
+
+on:
+  push:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+
 jobs:
   Run-tests:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest]
         python-version: [3.8]
     steps:
       - uses: actions/checkout@v2
@@ -15,3 +21,25 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install requirements
         run: pip install -r requirements.txt
+
+  build:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: docker login
+        env:
+          DOCKER_USERNAME: ${{ secrets.USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - name: Build and push front-end image
+        run: |
+          docker build -t thedockerman99/gallery-of-terror-dreams:front-end --build-arg requirements=./src/front-end/pinned_requirements.txt ./src/front-end/
+          docker push thedockerman99/gallery-of-terror-dreams:front-end
+      - name: Build and push back-end image
+        run: |
+          docker build -t thedockerman99/gallery-of-terror-dreams:back-end --build-arg requirements=./src/back-end/pinned_requirements.txt ./src/back-end/
+          docker push thedockerman99/gallery-of-terror-dreams:back-end
