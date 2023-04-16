@@ -12,6 +12,7 @@ env:
 
 jobs:
   Run-tests:
+    if: github.event_name == 'push'
     runs-on: ${{ env.OS_MATRIX }}
     strategy:
       matrix:
