@@ -12,7 +12,7 @@ Dare to enter the gallery of Terror Dreams, where your text takes on a sinister 
 
 <br>
 
-[Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
+[Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-BrY02x?muted=false)
 > :memo: **Note:** The GPT-3 API seemed to produce more contextually relevant sentences, leading to the creation of images that better matched the given context. However, I chose to use the ChatGPT API because it provides a significant cost reduction, offering a 10x decrease in expenses.
 >
 > :memo: **Note:** If you encounter the error message "Your request was rejected due to our safety system. Your prompt may include text that is not permitted by our safety system", resubmitting your request will often resolve the issue, allowing it to function as intended.
