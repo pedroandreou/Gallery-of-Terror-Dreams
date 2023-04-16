@@ -8,7 +8,7 @@ Terror Dreams takes artistic liberties to craft a cinematic horror experience th
 
 Dare to enter the gallery of Terror Dreams, where your text takes on a sinister new life 🌑 and the line between reality and nightmare blurs 😨. Are you brave enough to embrace the darkness within? 🖤
 
-![Screenshot](https://github.com/pedroandreou/Gallery-of-Terror-Dreams/blob/master/demos/chatpgt_demo.gif)
+![Screenshot](https://github.com/pedroandreou/Gallery-of-Terror-Dreams/blob/master/demos/chatgpt_demo.gif)
 
 <br>
 
