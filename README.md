@@ -8,12 +8,14 @@ Terror Dreams takes artistic liberties to craft a cinematic horror experience th
 
 Dare to enter the gallery of Terror Dreams, where your text takes on a sinister new life 🌑 and the line between reality and nightmare blurs 😨. Are you brave enough to embrace the darkness within? 🖤
 
-![Screenshot](https://github.com/pedroandreou/Gallery-of-Terror-Dreams/blob/master/demo/demo.gif)
+![Screenshot](https://github.com/pedroandreou/Gallery-of-Terror-Dreams/blob/master/demos/chatpgt_demo.gif)
 
 <br>
 
 [Click here to view the GIF with sound (to hear the sound, double-click the video)](https://gifs.com/embed/gallery-of-terror-dreams-79BM9O?muted=false)
-> **Note:** It seems to me that the GPT-3 API was producing more contextually relevant sentences, which consequently led to the generation of images that were more accurate to the given context. Nevertheless, I have opted for the ChatGPT API, as it offers a significant cost reduction, with a 10x decrease in expenses.
+> :memo: **Note:** The GPT-3 API seemed to produce more contextually relevant sentences, leading to the creation of images that better matched the given context. However, I chose to use the ChatGPT API because it provides a significant cost reduction, offering a 10x decrease in expenses.
+>
+> :memo: **Note:** If you encounter the error message "Your request was rejected due to our safety system. Your prompt may include text that is not permitted by our safety system", resubmitting your request will often resolve the issue, allowing it to function as intended.
 
 
 ## :building_construction: Environment
@@ -100,7 +102,22 @@ minikube stop && minikube start
 
 ## ADD YOUR INGRESS IP TO YOUR /etc/hosts/ to make your domain accessible locally
 minikube ip
-sudo nano /etc/hosts (add <minikube_ip> <domain_name>)
+sudo nano /etc/hosts (add <minikube_ip> gallery-of-terror-dreams.com)
+
+## EXPORT YOUR EMAIL AS A SECRET KEY, CREATE ISSUER FROM TEMPLATE
+cd ./k8s/certmanager/
+export EMAIL=<your-email>
+envsubst < issuer.template.yaml > issuer.yaml
+
+## INSTALL ALL CONFIGS
+cd ./k8s/infra/ && kubectl apply -f . && cd ../certmanager/ && kubectl apply -f certificate.yaml && kubectl apply -f issuer.yaml
+
+## DELETE ALL CONFIGS
+cd ./k8s/infra/ && kubectl delete -f . && cd ../certmanager/ && kubectl delete -f certificate.yaml && kubectl delete -f issuer.yaml
+kubectl delete all --all
+
+
+### DEPLOYMENT
 
 ## INSTALL INGRESS-NGINX
 minikube addons enable ingress
@@ -115,32 +132,20 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/downlo
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
-## EXPORT YOUR EMAIL AS A SECRET KEY, CREATE ISSUER FROM TEMPLATE
-cd ./k8s/certmanager/
-export EMAIL=<your-email>
-envsubst < issuer.template.yaml > issuer.yaml
-
-## INSTALL ALL CONFIGS
-cd ./k8s/infra/ && kubectl apply -f . && cd ../certmanager/ && kubectl apply -f certificate.yaml && kubectl apply -f issuer.yaml
-
-## CHECK STATUS AND MONITOR LOGS
+## CHECK STATUS
 kubectl describe clusterissuer letsencrypt-cluster-issuer
 kubectl describe certificate gallery-of-terror-dreams-tls -n default
-kubectl describe order -n default
 kubectl describe ingress gallery-of-terror-dreams-ingress -n default
-kubectl logs -n cert-manager -l app=cert-manager
 
-## DELETE ALL CONFIGS
-cd ./k8s/infra/ && kubectl delete -f . && cd ../certmanager/ && kubectl delete -f certificate.yaml && kubectl delete -f issuer.yaml
-kubectl delete all --all
+## MONITOR LOGS
+kubectl logs -n cert-manager -l app=cert-manager
 
 ## DELETE ALL CERTIFICATES
 kubectl delete certificate --all -n default
 kubectl delete certificaterequest --all -n default
-kubectl delete order --all -n default
 ```
 
-> **Note:** Let's Encrypt is unable to issue certificates for localhost. If you plan to run the app on a local Kubernetes cluster, consider using self-signed certificates. Read this [article](https://letsencrypt.org/docs/certificates-for-localhost/).
+> :memo: **Note:** Let's Encrypt is unable to issue certificates for localhost. If you plan to run the app on a local Kubernetes cluster, consider using self-signed certificates. Read more about it, [here](https://letsencrypt.org/docs/certificates-for-localhost/).
 
 
 ## 🛠 Initialization & Setup
